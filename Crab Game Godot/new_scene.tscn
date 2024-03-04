@@ -1,6 +1,7 @@
-[gd_scene load_steps=6 format=3 uid="uid://b7ba3g73jo8y2"]
+[gd_scene load_steps=8 format=3 uid="uid://b7ba3g73jo8y2"]
 
 [ext_resource type="Texture2D" uid="uid://vod05aw7217s" path="res://Tileset (2).png" id="1_srdt6"]
+[ext_resource type="Texture2D" uid="uid://bubvyh6myossl" path="res://icon.svg" id="2_bfvet"]
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_2lug6"]
 
@@ -56,6 +57,10 @@ physics_layer_0/collision_layer = 1
 sources/0 = SubResource("TileSetAtlasSource_i7ey5")
 sources/1 = SubResource("TileSetAtlasSource_6nwfv")
 
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_kakx3"]
+radius = 61.0
+height = 124.0
+
 [node name="NewScene" type="Node2D"]
 
 [node name="TileMap" type="TileMap" parent="."]
@@ -64,9 +69,16 @@ format = 2
 layer_0/name = "Terrain"
 layer_0/tile_data = PackedInt32Array(-65536, 196609, 1, -65535, 196609, 1, -65534, 196609, 1, -131070, 196609, 1, -131071, 196609, 1, -131072, 196609, 1)
 layer_1/name = "Grass"
-layer_1/enabled = true
-layer_1/modulate = Color(1, 1, 1, 1)
-layer_1/y_sort_enabled = false
-layer_1/y_sort_origin = 0
-layer_1/z_index = 0
 layer_1/tile_data = PackedInt32Array(-131072, 65537, 0, -65537, 1, 0, -131071, 65537, 0, -131070, 65537, 0, -131069, 196609, 0, -65534, 196609, 0, -65535, 196609, 0, -65536, 196609, 0)
+
+[node name="CharacterBody2D" type="CharacterBody2D" parent="."]
+position = Vector2(285, -464)
+
+[node name="Camera2D" type="Camera2D" parent="CharacterBody2D"]
+
+[node name="Sprite2D" type="Sprite2D" parent="CharacterBody2D"]
+texture = ExtResource("2_bfvet")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D"]
+position = Vector2(2, -1)
+shape = SubResource("CapsuleShape2D_kakx3")
