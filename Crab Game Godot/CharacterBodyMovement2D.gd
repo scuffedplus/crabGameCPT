@@ -29,11 +29,11 @@ func _physics_process(delta):
 #LEFT AND RIGHT ACCELLERATION CODE
 
 	if (Input.is_action_pressed("ui_left")):
-		if (velocity.x > -MaxSpeed):
+		if (velocity.x > -MaxSpeed && velocity.x <= 0):
 			velocity.x -= Accel
 	
 	if (Input.is_action_pressed("ui_right")):
-		if (velocity.x < MaxSpeed):
+		if (velocity.x < MaxSpeed && velocity.x >= 0):
 			velocity.x += Accel
 
 #LEFT AND RIGHT DECELLERATION CODE
