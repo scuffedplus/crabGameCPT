@@ -1,6 +1,7 @@
 extends CharacterBody2D
 
-const MaxSpeed = 500.0
+const MaxWalkSpeed = 250
+const MaxRunSpeed = 600
 const Accel = 100
 
 var Decel = 3
@@ -10,14 +11,15 @@ const MinDecel = 3
 const DecelMultiplier = 1.75
 
 const MaxDecel = 25
-const JUMP_VELOCITY = -400.0
+const JUMP_VELOCITY = -800.0
 
 # Get the gravity from the project settings to be synced with RigidBody nodes.
-var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
+var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")*2
 
 
 func _physics_process(delta):
 	
+#JUMPING CODE
 	var HoldingMove = Input.is_action_pressed("ui_right") && Input.is_action_pressed("ui_left")
 	
 	if not is_on_floor():
@@ -27,15 +29,29 @@ func _physics_process(delta):
 		velocity.y = JUMP_VELOCITY
 
 #LEFT AND RIGHT ACCELLERATION CODE
-
-	if (Input.is_action_pressed("ui_left")):
-		if (velocity.x > -MaxSpeed && velocity.x <= 0):
-			velocity.x -= Accel
+	if (Input.is_key_pressed(KEY_SHIFT)):
+		if (Input.is_action_pressed("ui_left")):
+			if (velocity.x > -MaxRunSpeed && velocity.x <= 0):
+				velocity.x -= Accel
 	
-	if (Input.is_action_pressed("ui_right")):
-		if (velocity.x < MaxSpeed && velocity.x >= 0):
-			velocity.x += Accel
-
+		if (Input.is_action_pressed("ui_right")):
+			if (velocity.x < MaxRunSpeed && velocity.x >= 0):
+				velocity.x += Accel
+	else:
+		
+		if (abs(velocity.x) > MaxWalkSpeed):
+			if (velocity.x > 0):
+				velocity.x -= Decel
+			else:
+				velocity.x += Decel
+		
+		if (Input.is_action_pressed("ui_left")):
+			if (velocity.x > -MaxWalkSpeed && velocity.x <= 0):
+				velocity.x -= Accel
+	
+		if (Input.is_action_pressed("ui_right")):
+			if (velocity.x < MaxWalkSpeed && velocity.x >= 0):
+				velocity.x += Accel
 #LEFT AND RIGHT DECELLERATION CODE
 
 	if (velocity.x <= Decel && velocity.x >= -Decel):
