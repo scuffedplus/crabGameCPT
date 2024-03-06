@@ -3,7 +3,7 @@ extends CharacterBody2D
 const MaxWalkSpeed = 250
 const MaxRunSpeed = 600
 const Accel = 100
-
+#CHANGE FOR CHRISTOPHER'S THING TO WORK
 var Decel = 3
 const MinDecel = 3
 

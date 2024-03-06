@@ -143,3 +143,5 @@ script = ExtResource("3_50qc6")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Enemies/3/CharacterBody2D"]
 position = Vector2(-1, 1)
 shape = SubResource("CapsuleShape2D_kakx3")
+
+[node name="CRNABFOWBDFHOABW" type="Node2D" parent="."]
