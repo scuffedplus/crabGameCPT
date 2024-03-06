@@ -1,8 +1,9 @@
-[gd_scene load_steps=9 format=3 uid="uid://b7ba3g73jo8y2"]
+[gd_scene load_steps=11 format=3 uid="uid://b7ba3g73jo8y2"]
 
 [ext_resource type="Texture2D" uid="uid://vod05aw7217s" path="res://Tileset (2).png" id="1_srdt6"]
 [ext_resource type="Script" path="res://CharacterBodyMovement2D.gd" id="2_5ndbo"]
 [ext_resource type="Texture2D" uid="uid://bubvyh6myossl" path="res://icon.svg" id="2_bfvet"]
+[ext_resource type="Script" path="res://enemy.gd" id="3_50qc6"]
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_2lug6"]
 
@@ -62,6 +63,17 @@ sources/1 = SubResource("TileSetAtlasSource_6nwfv")
 radius = 61.0
 height = 124.0
 
+[sub_resource type="SpriteFrames" id="SpriteFrames_gsr0c"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_bfvet")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
 [node name="NewScene" type="Node2D"]
 
 [node name="Testing Environment\\" type="Node2D" parent="."]
@@ -95,4 +107,39 @@ texture = ExtResource("2_bfvet")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Character/CharacterBody2D"]
 position = Vector2(2, -1)
+shape = SubResource("CapsuleShape2D_kakx3")
+
+[node name="Enemies" type="Node2D" parent="."]
+
+[node name="1" type="AnimatedSprite2D" parent="Enemies"]
+position = Vector2(653, -444)
+sprite_frames = SubResource("SpriteFrames_gsr0c")
+script = ExtResource("3_50qc6")
+
+[node name="CharacterBody2D" type="CharacterBody2D" parent="Enemies/1"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Enemies/1/CharacterBody2D"]
+position = Vector2(-1, 1)
+shape = SubResource("CapsuleShape2D_kakx3")
+
+[node name="2" type="AnimatedSprite2D" parent="Enemies"]
+position = Vector2(1258, -447)
+sprite_frames = SubResource("SpriteFrames_gsr0c")
+script = ExtResource("3_50qc6")
+
+[node name="CharacterBody2D" type="CharacterBody2D" parent="Enemies/2"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Enemies/2/CharacterBody2D"]
+position = Vector2(-1, 1)
+shape = SubResource("CapsuleShape2D_kakx3")
+
+[node name="3" type="AnimatedSprite2D" parent="Enemies"]
+position = Vector2(-528, -445)
+sprite_frames = SubResource("SpriteFrames_gsr0c")
+script = ExtResource("3_50qc6")
+
+[node name="CharacterBody2D" type="CharacterBody2D" parent="Enemies/3"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Enemies/3/CharacterBody2D"]
+position = Vector2(-1, 1)
 shape = SubResource("CapsuleShape2D_kakx3")
