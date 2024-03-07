@@ -1,9 +1,10 @@
-[gd_scene load_steps=11 format=3 uid="uid://b7ba3g73jo8y2"]
+[gd_scene load_steps=15 format=3 uid="uid://b7ba3g73jo8y2"]
 
 [ext_resource type="Texture2D" uid="uid://vod05aw7217s" path="res://Tileset (2).png" id="1_srdt6"]
 [ext_resource type="Script" path="res://CharacterBodyMovement2D.gd" id="2_5ndbo"]
 [ext_resource type="Texture2D" uid="uid://bubvyh6myossl" path="res://icon.svg" id="2_bfvet"]
 [ext_resource type="Script" path="res://enemy.gd" id="3_50qc6"]
+[ext_resource type="Script" path="res://Elevator.gd" id="5_xp72s"]
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_2lug6"]
 
@@ -59,9 +60,10 @@ physics_layer_0/collision_layer = 1
 sources/0 = SubResource("TileSetAtlasSource_i7ey5")
 sources/1 = SubResource("TileSetAtlasSource_6nwfv")
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_kakx3"]
-radius = 61.0
-height = 124.0
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6fwq0"]
+size = Vector2(128, 127)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_weufc"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_gsr0c"]
 animations = [{
@@ -73,6 +75,13 @@ animations = [{
 "name": &"default",
 "speed": 5.0
 }]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_kakx3"]
+radius = 92.0
+height = 184.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_gqny5"]
+size = Vector2(26.4635, 20)
 
 [node name="NewScene" type="Node2D"]
 
@@ -106,8 +115,18 @@ script = ExtResource("2_5ndbo")
 texture = ExtResource("2_bfvet")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Character/CharacterBody2D"]
-position = Vector2(2, -1)
-shape = SubResource("CapsuleShape2D_kakx3")
+position = Vector2(0, -0.5)
+shape = SubResource("RectangleShape2D_6fwq0")
+
+[node name="EnemyDetection" type="Area2D" parent="Character/CharacterBody2D"]
+collision_layer = 2
+collision_mask = 2
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Character/CharacterBody2D/EnemyDetection"]
+rotation = -3.14159
+scale = Vector2(6.65429, -6.56945)
+shape = SubResource("RectangleShape2D_weufc")
 
 [node name="Enemies" type="Node2D" parent="."]
 
@@ -116,32 +135,35 @@ position = Vector2(653, -444)
 sprite_frames = SubResource("SpriteFrames_gsr0c")
 script = ExtResource("3_50qc6")
 
-[node name="CharacterBody2D" type="CharacterBody2D" parent="Enemies/1"]
+[node name="Area2D" type="Area2D" parent="Enemies/1"]
+collision_layer = 2
+collision_mask = 2
+monitoring = false
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Enemies/1/CharacterBody2D"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Enemies/1/Area2D"]
+light_mask = 2
+visibility_layer = 2
 position = Vector2(-1, 1)
-shape = SubResource("CapsuleShape2D_kakx3")
-
-[node name="2" type="AnimatedSprite2D" parent="Enemies"]
-position = Vector2(1258, -447)
-sprite_frames = SubResource("SpriteFrames_gsr0c")
-script = ExtResource("3_50qc6")
-
-[node name="CharacterBody2D" type="CharacterBody2D" parent="Enemies/2"]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Enemies/2/CharacterBody2D"]
-position = Vector2(-1, 1)
-shape = SubResource("CapsuleShape2D_kakx3")
-
-[node name="3" type="AnimatedSprite2D" parent="Enemies"]
-position = Vector2(-528, -445)
-sprite_frames = SubResource("SpriteFrames_gsr0c")
-script = ExtResource("3_50qc6")
-
-[node name="CharacterBody2D" type="CharacterBody2D" parent="Enemies/3"]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Enemies/3/CharacterBody2D"]
-position = Vector2(-1, 1)
+scale = Vector2(0.720561, 0.720561)
 shape = SubResource("CapsuleShape2D_kakx3")
 
 [node name="CRNABFOWBDFHOABW" type="Node2D" parent="."]
+
+[node name="MovingEnvironment" type="Node2D" parent="."]
+
+[node name="Elevator" type="AnimatableBody2D" parent="MovingEnvironment"]
+script = ExtResource("5_xp72s")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="MovingEnvironment/Elevator"]
+position = Vector2(1638.55, -404)
+scale = Vector2(10.6903, -2.95981)
+shape = SubResource("RectangleShape2D_gqny5")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="MovingEnvironment/Elevator"]
+
+[node name="Sprite2D" type="Sprite2D" parent="MovingEnvironment/Elevator/AnimationPlayer"]
+position = Vector2(1639.96, -405)
+scale = Vector2(2.21943, 0.46875)
+texture = ExtResource("2_bfvet")
+
+[connection signal="area_entered" from="Character/CharacterBody2D/EnemyDetection" to="Character/CharacterBody2D" method="_on_enemy_detection_area_entered"]

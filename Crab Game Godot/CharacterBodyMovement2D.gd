@@ -1,8 +1,17 @@
 extends CharacterBody2D
 
+var Midair
+
+const GPSpeed = -1000
+
+const MaxHP = 3
+var CurrentHP = 3
+
 const MaxWalkSpeed = 250
 const MaxRunSpeed = 600
-const Accel = 100
+var Accel = 100
+const GPAccel = 0
+const WalkAccel = 100
 #CHANGE FOR CHRISTOPHER'S THING TO WORK
 var Decel = 3
 const MinDecel = 3
@@ -16,16 +25,30 @@ const JUMP_VELOCITY = -800.0
 # Get the gravity from the project settings to be synced with RigidBody nodes.
 var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")*2
 
+var Poundability = true
 
 func _physics_process(delta):
+	
+	Midair = !is_on_floor()
 	
 #JUMPING CODE
 	var HoldingMove = Input.is_action_pressed("ui_right") && Input.is_action_pressed("ui_left")
 	
-	if not is_on_floor():
-		velocity.y += gravity * delta
+	if (Midair):
+		if (Poundability):
+			velocity.y += gravity * delta
+	else:
+		Poundability = true
+		Accel = WalkAccel
 
-	if Input.is_action_just_pressed("ui_accept") and is_on_floor():
+#ATTACKING LOGIC
+	if (Input.is_key_pressed(KEY_X)):
+		if (Input.is_action_pressed("ui_down")):
+			if (Midair && Poundability):
+				GroundPound()
+
+#JUMPING LOGIC
+	if (Input.is_action_just_pressed("ui_accept") and is_on_floor()):
 		velocity.y = JUMP_VELOCITY
 
 #LEFT AND RIGHT ACCELLERATION CODE
@@ -75,3 +98,23 @@ func _physics_process(delta):
 				Decel = Decel * DecelMultiplier
 
 	move_and_slide()
+
+func GroundPound():
+	Poundability = false
+	velocity.y = 0
+	velocity.x = 0
+	Accel = GPAccel
+	await get_tree().create_timer(0.25).timeout
+	velocity.y -= GPSpeed
+
+func die():
+	print("You Died")
+	emit_signal("PlayerDied")
+	queue_free()
+
+
+func _on_enemy_detection_area_entered(area):
+	CurrentHP -= 1
+	print("Youch!!!")
+	if (CurrentHP == 0):
+		die()

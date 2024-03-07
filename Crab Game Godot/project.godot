@@ -14,3 +14,11 @@ config/name="Crab Game"
 run/main_scene="res://new_scene.tscn"
 config/features=PackedStringArray("4.2", "Forward Plus")
 config/icon="res://icon.svg"
+
+[autoload]
+
+PlayerVariables="*res://player_variables.gd"
+
+[layer_names]
+
+2d_physics/layer_2="HURTABLES"
