@@ -7,10 +7,6 @@ var enemNum = 3
 func _ready():
 	pass
 
-
-	
-	
-	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	i = i+1
@@ -20,5 +16,7 @@ func _process(delta):
 	else:
 		i = 0
 		dir = dir * -1
-	
-		
+
+
+func _on_enemy_hitbox_tree_exited():
+	queue_free()

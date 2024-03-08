@@ -1,10 +1,9 @@
-[gd_scene load_steps=16 format=3 uid="uid://b7ba3g73jo8y2"]
+[gd_scene load_steps=15 format=3 uid="uid://b7ba3g73jo8y2"]
 
 [ext_resource type="Texture2D" uid="uid://vod05aw7217s" path="res://Tileset (2).png" id="1_srdt6"]
 [ext_resource type="Script" path="res://CharacterBodyMovement2D.gd" id="2_5ndbo"]
 [ext_resource type="Texture2D" uid="uid://bubvyh6myossl" path="res://icon.svg" id="2_bfvet"]
 [ext_resource type="Script" path="res://enemy.gd" id="3_50qc6"]
-[ext_resource type="Script" path="res://Enemy hitbox.gd" id="5_huoak"]
 [ext_resource type="Script" path="res://Elevator.gd" id="5_xp72s"]
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_2lug6"]
@@ -136,13 +135,11 @@ position = Vector2(653, -444)
 sprite_frames = SubResource("SpriteFrames_gsr0c")
 script = ExtResource("3_50qc6")
 
-[node name="Enemy hitbox" type="Area2D" parent="Enemies/1" groups=["Enemies"]]
-collision_layer = 2
+[node name="RigidBody2D" type="RigidBody2D" parent="Enemies/1"]
+collision_layer = 0
 collision_mask = 2
-monitoring = false
-script = ExtResource("5_huoak")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Enemies/1/Enemy hitbox"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Enemies/1/RigidBody2D"]
 light_mask = 2
 visibility_layer = 2
 position = Vector2(-1, 1)
@@ -168,5 +165,4 @@ position = Vector2(1639.96, -405)
 scale = Vector2(2.21943, 0.46875)
 texture = ExtResource("2_bfvet")
 
-[connection signal="area_entered" from="Character/Crab/EnemyDetection" to="Character/Crab" method="_on_enemy_detection_area_entered"]
-[connection signal="tree_exited" from="Enemies/1/Enemy hitbox" to="Enemies/1" method="_on_enemy_hitbox_tree_exited"]
+[connection signal="body_entered" from="Character/Crab/EnemyDetection" to="Character/Crab" method="_on_enemy_detection_body_entered"]

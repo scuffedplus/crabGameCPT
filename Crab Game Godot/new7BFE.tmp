@@ -169,4 +169,3 @@ scale = Vector2(2.21943, 0.46875)
 texture = ExtResource("2_bfvet")
 
 [connection signal="area_entered" from="Character/Crab/EnemyDetection" to="Character/Crab" method="_on_enemy_detection_area_entered"]
-[connection signal="tree_exited" from="Enemies/1/Enemy hitbox" to="Enemies/1" method="_on_enemy_hitbox_tree_exited"]

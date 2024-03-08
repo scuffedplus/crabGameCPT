@@ -1,14 +1,15 @@
-extends AnimatableBody2D
-var i = 0
-const ElevatorDelay = 300
-var Speed = 30
+extends Area2D
+var health = 3
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	pass
+	pass # Replace with function body.
+
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	i += 1
-	if (i >= ElevatorDelay):
-		Speed = -Speed
+	if (health <= 0):
+		queue_free()
+
+func TakeDamage(Damage):
+	health -= Damage

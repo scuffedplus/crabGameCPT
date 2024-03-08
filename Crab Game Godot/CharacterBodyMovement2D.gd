@@ -20,7 +20,7 @@ const MinDecel = 3
 const DecelMultiplier = 1.75
 
 const MaxDecel = 25
-const JUMP_VELOCITY = -800.0
+const JUMP_VELOCITY = -1000.0
 
 # Get the gravity from the project settings to be synced with RigidBody nodes.
 var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")*2
@@ -46,9 +46,13 @@ func _physics_process(delta):
 		if (Input.is_action_pressed("ui_down")):
 			if (Midair && Poundability):
 				GroundPound()
+		else:
+			if (Input.is_action_pressed("ui_up")):
+				punch()
+				
 
 #JUMPING LOGIC
-	if (Input.is_action_just_pressed("ui_accept") and is_on_floor()):
+	if (Input.is_key_pressed(KEY_Z) and is_on_floor()):
 		velocity.y = JUMP_VELOCITY
 
 #LEFT AND RIGHT ACCELLERATION CODE
@@ -114,7 +118,14 @@ func die():
 
 
 func _on_enemy_detection_area_entered(area):
-	CurrentHP -= 1
-	print("Youch!!!")
-	if (CurrentHP == 0):
-		die()
+	if (velocity.y <= 0):
+		CurrentHP -= 1
+		print("Youch!!!")
+		if (CurrentHP == 0):
+			die()
+	else:
+		if (area.is_in_group("Enemies")):
+			area.TakeDamage(3)
+
+func punch():
+	pass
