@@ -7,8 +7,10 @@ const GPSpeed = -1200
 const Bounce = -750
 const GPBounce = -1200
 
-const MaxHP = 3
-var CurrentHP = 3
+var PlayerPosition = position.x
+
+const MaxHP = 100000000000000000
+var CurrentHP = 1000000000
 
 const MaxWalkSpeed = 250
 const MaxRunSpeed = 600
@@ -31,6 +33,8 @@ var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")*2
 var Poundability = true
 
 func _physics_process(delta):
+	
+	PlayerPosition = position.x
 	
 	Midair = !is_on_floor()
 	
@@ -115,6 +119,7 @@ func GroundPound():
 	await get_tree().create_timer(0.10).timeout
 	velocity.y -= GPSpeed
 
+#Resets the player after a groundpound
 func UnGroundPound():
 	Poundability = true
 	Accel = WalkAccel
@@ -156,5 +161,15 @@ func MovingRight():
 
 #IGNORE THE BROKEN CODE
 func Knockback(Enemy):
-	#var PlayerPosition = get_node(path: CRAB/Controller).position.x
-	pass
+	Accel = 0
+	var EnemyPosition = Enemy.get_parent().position.x
+	velocity.y = -500
+	print(PlayerPosition-EnemyPosition)
+	print(PlayerPosition)
+	print(EnemyPosition)
+	
+	if (EnemyPosition > PlayerPosition):
+		#ENEMY TO THE LEFT
+		velocity.x = -750
+	if (EnemyPosition < PlayerPosition):
+		velocity.x = 750

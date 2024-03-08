@@ -1,5 +1,5 @@
 extends Area2D
-var Health = 3
+var Health = 1000000000
 
 const Damage = 1
 
@@ -19,4 +19,6 @@ func TakeDamage(CrabStrength):
 	
 	#Called by the C R A B to see how much damage the C R A B should take
 func GetDamage():
+	print("ENEMY POSITION: ")
+	print(position.x)
 	return(Damage)
