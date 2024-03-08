@@ -1,8 +1,8 @@
 extends CharacterBody2D
 
 var Midair
-
-const GPSpeed = -1000
+var FacingRight
+const GPSpeed = -1200
 
 const Bounce = -750
 const GPBounce = -1200
@@ -62,10 +62,12 @@ func _physics_process(delta):
 		if (Input.is_action_pressed("ui_left")):
 			if (velocity.x > -MaxRunSpeed && velocity.x <= 0):
 				velocity.x -= Accel
+				FacingRight = false
 	
 		if (Input.is_action_pressed("ui_right")):
 			if (velocity.x < MaxRunSpeed && velocity.x >= 0):
 				velocity.x += Accel
+				FacingRight = true
 	else:
 		
 		if (abs(velocity.x) > MaxWalkSpeed):
@@ -122,11 +124,12 @@ func die():
 	emit_signal("PlayerDied")
 	queue_free()
 
-
+#ON CONTACT WITH AN OUCHIE:
 func _on_enemy_detection_area_entered(area):
 	if (velocity.y <= 0):
 		CurrentHP -= area.GetDamage()
 		print("Youch!!!")
+		Knockback(area)
 		if (CurrentHP == 0):
 			die()
 	else:
@@ -135,11 +138,23 @@ func _on_enemy_detection_area_entered(area):
 		Boing()
 
 func punch():
+	#if you guys want to code we need an animation first
+	#easiest way I found is to make a hitbox appear from frame x to frame y
 	pass
 
 func Boing():
 	if (Poundability == false):
 		UnGroundPound()
-		velocity.y = GPBounce
+		velocity.y = -velocity.y*1.25
 	else:
-		velocity.y = Bounce
+		velocity.y = -velocity.y
+
+#Returns true if the player is attempting to move to the right (X+)
+func MovingRight():
+	return(FacingRight)
+
+
+#IGNORE THE BROKEN CODE
+func Knockback(Enemy):
+	#var PlayerPosition = get_node(path: CRAB/Controller).position.x
+	pass

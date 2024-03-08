@@ -21,4 +21,4 @@ PlayerVariables="*res://player_variables.gd"
 
 [layer_names]
 
-2d_physics/layer_2="HURTABLES"
+2d_physics/layer_2="HurtsThePlayer"

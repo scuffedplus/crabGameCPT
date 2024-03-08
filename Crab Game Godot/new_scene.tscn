@@ -104,27 +104,27 @@ scale = Vector2(8.86413, 1)
 build_mode = 1
 polygon = PackedVector2Array(-2, -376, 573, -381, 573, 1, -2, -1)
 
-[node name="Character" type="Node2D" parent="."]
+[node name="CRAB" type="Node2D" parent="."]
 
-[node name="Crab" type="CharacterBody2D" parent="Character"]
+[node name="Controller" type="CharacterBody2D" parent="CRAB"]
 position = Vector2(285, -464)
 script = ExtResource("2_5ndbo")
 
-[node name="Camera2D" type="Camera2D" parent="Character/Crab"]
+[node name="Camera2D" type="Camera2D" parent="CRAB/Controller"]
 
-[node name="Sprite2D" type="Sprite2D" parent="Character/Crab"]
+[node name="Sprite2D" type="Sprite2D" parent="CRAB/Controller"]
 texture = ExtResource("2_bfvet")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Character/Crab"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CRAB/Controller"]
 position = Vector2(0, -0.5)
 shape = SubResource("RectangleShape2D_6fwq0")
 
-[node name="EnemyDetection" type="Area2D" parent="Character/Crab"]
+[node name="EnemyDetection" type="Area2D" parent="CRAB/Controller"]
 collision_layer = 0
 collision_mask = 2
 monitorable = false
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Character/Crab/EnemyDetection"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CRAB/Controller/EnemyDetection"]
 rotation = -3.14159
 scale = Vector2(6.65429, -6.56945)
 shape = SubResource("RectangleShape2D_weufc")
@@ -149,6 +149,120 @@ position = Vector2(-1, 1)
 scale = Vector2(0.720561, 0.720561)
 shape = SubResource("CapsuleShape2D_kakx3")
 
+[node name="BouncePads" type="Node2D" parent="Enemies"]
+
+[node name="Node2D" type="Node2D" parent="Enemies/BouncePads"]
+
+[node name="Enemy hitbox" type="Area2D" parent="Enemies/BouncePads/Node2D" groups=["Enemies"]]
+position = Vector2(1016, -714)
+collision_layer = 2
+collision_mask = 2
+monitoring = false
+script = ExtResource("5_huoak")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Enemies/BouncePads/Node2D/Enemy hitbox"]
+light_mask = 2
+visibility_layer = 2
+position = Vector2(-1, 1)
+scale = Vector2(0.720561, 0.720561)
+shape = SubResource("CapsuleShape2D_kakx3")
+
+[node name="Sprite2D" type="Sprite2D" parent="Enemies/BouncePads/Node2D/Enemy hitbox"]
+texture = ExtResource("2_bfvet")
+
+[node name="Enemy hitbox2" type="Area2D" parent="Enemies/BouncePads/Node2D" groups=["Enemies"]]
+position = Vector2(-716, -1378)
+collision_layer = 2
+collision_mask = 2
+monitoring = false
+script = ExtResource("5_huoak")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Enemies/BouncePads/Node2D/Enemy hitbox2"]
+light_mask = 2
+visibility_layer = 2
+position = Vector2(-1, 1)
+scale = Vector2(0.720561, 0.720561)
+shape = SubResource("CapsuleShape2D_kakx3")
+
+[node name="Sprite2D" type="Sprite2D" parent="Enemies/BouncePads/Node2D/Enemy hitbox2"]
+texture = ExtResource("2_bfvet")
+
+[node name="Enemy hitbox3" type="Area2D" parent="Enemies/BouncePads/Node2D" groups=["Enemies"]]
+position = Vector2(-473, -1003)
+collision_layer = 2
+collision_mask = 2
+monitoring = false
+script = ExtResource("5_huoak")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Enemies/BouncePads/Node2D/Enemy hitbox3"]
+light_mask = 2
+visibility_layer = 2
+position = Vector2(-1, 1)
+scale = Vector2(0.720561, 0.720561)
+shape = SubResource("CapsuleShape2D_kakx3")
+
+[node name="Sprite2D" type="Sprite2D" parent="Enemies/BouncePads/Node2D/Enemy hitbox3"]
+texture = ExtResource("2_bfvet")
+
+[node name="Enemy hitbox4" type="Area2D" parent="Enemies/BouncePads/Node2D" groups=["Enemies"]]
+position = Vector2(23, -1114)
+collision_layer = 2
+collision_mask = 2
+monitoring = false
+script = ExtResource("5_huoak")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Enemies/BouncePads/Node2D/Enemy hitbox4"]
+light_mask = 2
+visibility_layer = 2
+position = Vector2(-1, 1)
+scale = Vector2(0.720561, 0.720561)
+shape = SubResource("CapsuleShape2D_kakx3")
+
+[node name="Sprite2D" type="Sprite2D" parent="Enemies/BouncePads/Node2D/Enemy hitbox4"]
+texture = ExtResource("2_bfvet")
+
+[node name="Enemy hitbox5" type="Area2D" parent="Enemies/BouncePads/Node2D" groups=["Enemies"]]
+position = Vector2(442, -884)
+collision_layer = 2
+collision_mask = 2
+monitoring = false
+script = ExtResource("5_huoak")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Enemies/BouncePads/Node2D/Enemy hitbox5"]
+light_mask = 2
+visibility_layer = 2
+position = Vector2(-1, 1)
+scale = Vector2(0.720561, 0.720561)
+shape = SubResource("CapsuleShape2D_kakx3")
+
+[node name="Sprite2D" type="Sprite2D" parent="Enemies/BouncePads/Node2D/Enemy hitbox5"]
+texture = ExtResource("2_bfvet")
+
+[node name="Enemy hitbox6" type="Area2D" parent="Enemies/BouncePads/Node2D" groups=["Enemies"]]
+position = Vector2(-120, -1531)
+scale = Vector2(4.75647, 0.943091)
+collision_layer = 2
+collision_mask = 2
+monitoring = false
+script = ExtResource("5_huoak")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Enemies/BouncePads/Node2D/Enemy hitbox6"]
+light_mask = 2
+visibility_layer = 2
+position = Vector2(-1, 1)
+scale = Vector2(0.720561, 0.720561)
+shape = SubResource("CapsuleShape2D_kakx3")
+
+[node name="Sprite2D" type="Sprite2D" parent="Enemies/BouncePads/Node2D/Enemy hitbox6"]
+texture = ExtResource("2_bfvet")
+
+[node name="Label" type="Label" parent="Enemies/BouncePads"]
+offset_left = -263.0
+offset_top = -1762.0
+offset_right = -165.0
+offset_bottom = -1739.0
+text = "You WIN!!!!!!!"
+
 [node name="CRNABFOWBDFHOABW" type="Node2D" parent="."]
 
 [node name="MovingEnvironment" type="Node2D" parent="."]
@@ -168,5 +282,11 @@ position = Vector2(1639.96, -405)
 scale = Vector2(2.21943, 0.46875)
 texture = ExtResource("2_bfvet")
 
-[connection signal="area_entered" from="Character/Crab/EnemyDetection" to="Character/Crab" method="_on_enemy_detection_area_entered"]
+[connection signal="area_entered" from="CRAB/Controller/EnemyDetection" to="CRAB/Controller" method="_on_enemy_detection_area_entered"]
 [connection signal="tree_exited" from="Enemies/1/Enemy hitbox" to="Enemies/1" method="_on_enemy_hitbox_tree_exited"]
+[connection signal="tree_exited" from="Enemies/BouncePads/Node2D/Enemy hitbox" to="Enemies/1" method="_on_enemy_hitbox_tree_exited"]
+[connection signal="tree_exited" from="Enemies/BouncePads/Node2D/Enemy hitbox2" to="Enemies/1" method="_on_enemy_hitbox_tree_exited"]
+[connection signal="tree_exited" from="Enemies/BouncePads/Node2D/Enemy hitbox3" to="Enemies/1" method="_on_enemy_hitbox_tree_exited"]
+[connection signal="tree_exited" from="Enemies/BouncePads/Node2D/Enemy hitbox4" to="Enemies/1" method="_on_enemy_hitbox_tree_exited"]
+[connection signal="tree_exited" from="Enemies/BouncePads/Node2D/Enemy hitbox5" to="Enemies/1" method="_on_enemy_hitbox_tree_exited"]
+[connection signal="tree_exited" from="Enemies/BouncePads/Node2D/Enemy hitbox6" to="Enemies/1" method="_on_enemy_hitbox_tree_exited"]
