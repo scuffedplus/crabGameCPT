@@ -1,5 +1,7 @@
 extends Area2D
-var health = 3
+var Health = 3
+
+const Damage = 1
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -8,8 +10,11 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	if (health <= 0):
+	if (Health <= 0):
 		queue_free()
 
 func TakeDamage(Damage):
-	health -= Damage
+	Health -= Damage
+	
+func GetDamage():
+	return(Damage)

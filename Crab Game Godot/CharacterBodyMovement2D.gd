@@ -4,6 +4,9 @@ var Midair
 
 const GPSpeed = -1000
 
+const Bounce = -750
+const GPBounce = -1200
+
 const MaxHP = 3
 var CurrentHP = 3
 
@@ -38,8 +41,7 @@ func _physics_process(delta):
 		if (Poundability):
 			velocity.y += gravity * delta
 	else:
-		Poundability = true
-		Accel = WalkAccel
+		UnGroundPound()
 
 #ATTACKING LOGIC
 	if (Input.is_key_pressed(KEY_X)):
@@ -108,8 +110,12 @@ func GroundPound():
 	velocity.y = 0
 	velocity.x = 0
 	Accel = GPAccel
-	await get_tree().create_timer(0.25).timeout
+	await get_tree().create_timer(0.10).timeout
 	velocity.y -= GPSpeed
+
+func UnGroundPound():
+	Poundability = true
+	Accel = WalkAccel
 
 func die():
 	print("You Died")
@@ -119,13 +125,21 @@ func die():
 
 func _on_enemy_detection_area_entered(area):
 	if (velocity.y <= 0):
-		CurrentHP -= 1
+		CurrentHP -= area.GetDamage()
 		print("Youch!!!")
 		if (CurrentHP == 0):
 			die()
 	else:
 		if (area.is_in_group("Enemies")):
 			area.TakeDamage(3)
+		Boing()
 
 func punch():
 	pass
+
+func Boing():
+	if (Poundability == false):
+		UnGroundPound()
+		velocity.y = GPBounce
+	else:
+		velocity.y = Bounce
