@@ -9,44 +9,85 @@ const GPBounce = -1200
 
 var PlayerPosition = position.x
 
-const MaxHP = 100000000000000000
-var CurrentHP = 1000000000
+const MaxHP = 3
+var CurrentHP = 300
 
 const MaxWalkSpeed = 250
 const MaxRunSpeed = 600
 var Accel = 100
-const GPAccel = 0
 const WalkAccel = 100
-#CHANGE FOR CHRISTOPHER'S THING TO WORK
+
 var Decel = 3
 const MinDecel = 3
-
 # The amount the deceleration exponentially increases by.
 const DecelMultiplier = 1.75
+var MaxDecel = 25
+#The maximum deceleration changes depending on whether the player is grounded.
+const MidAirMaxDecel = 8
+const OnGroundMaxDecel = 25
 
-const MaxDecel = 25
 const JUMP_VELOCITY = -1000.0
 
 # Get the gravity from the project settings to be synced with RigidBody nodes.
 var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")*2
 
+#Different States for the player are below:
 var Poundability = true
+
+#NOTE:
+#Currently, IF it is NOT POSSIBLE TO GROUNDPOUND
+#IT IS ASSUMED that the player is MID-GROUNDPOUND
+
+
+#If stunned (can't move left and right)
+var Stunned = false
+var StunDelay = false
+
+#NOTE:
+#Stunned is set to false if touching the ground
+#StunDelay is there because getting knocked back sets Stunned to true and knocks the player back
+#BUT if the player is on the floor, Stunned is immediately set back to false
+#StunDelay is used to delay the inversion of Stunned by one frame if enabled
+#This will probably break something down the line but we'll cross that bridge when we get to it.
+
+#If invicible
+var Invicible = false
+
+"""
+ALL of the above variables are used by the groundpound script.
+It's a bit of a mess.
+NOTE:
+"""
 
 func _physics_process(delta):
 	
 	PlayerPosition = position.x
-	
+
 	Midair = !is_on_floor()
 	
 #JUMPING CODE
 	var HoldingMove = Input.is_action_pressed("ui_right") && Input.is_action_pressed("ui_left")
 	
 	if (Midair):
+		MaxDecel = MidAirMaxDecel
 		if (Poundability):
 			velocity.y += gravity * delta
 	else:
-		UnGroundPound()
-
+		MaxDecel = OnGroundMaxDecel
+		if (Poundability == false):
+			UnGroundPound()
+		Invicible = false
+		if (StunDelay == false):
+			if (Stunned):
+				Stunned = false
+	
+	StunDelay = false
+	
+	if (Stunned == true):
+		Accel = 0
+	else:
+		Accel = WalkAccel
+	
 #ATTACKING LOGIC
 	if (Input.is_key_pressed(KEY_X)):
 		if (Input.is_action_pressed("ui_down")):
@@ -115,14 +156,22 @@ func GroundPound():
 	Poundability = false
 	velocity.y = 0
 	velocity.x = 0
-	Accel = GPAccel
+	Stunned = true
+	print("Stunned!")
 	await get_tree().create_timer(0.10).timeout
 	velocity.y -= GPSpeed
 
 #Resets the player after a groundpound
 func UnGroundPound():
+	print("Acceleration Reset")
 	Poundability = true
-	Accel = WalkAccel
+
+func TakeDamage(Damager):
+	CurrentHP -= Damager.GetDamage()
+	print("Youch!!!")
+	Knockback(Damager)
+	if (CurrentHP == 0):
+		die()
 
 func die():
 	print("You Died")
@@ -132,18 +181,14 @@ func die():
 #ON CONTACT WITH AN OUCHIE:
 func _on_enemy_detection_area_entered(area):
 	if (velocity.y <= 0):
-		CurrentHP -= area.GetDamage()
-		print("Youch!!!")
-		Knockback(area)
-		if (CurrentHP == 0):
-			die()
+		TakeDamage(area)
 	else:
 		if (area.is_in_group("Enemies")):
 			area.TakeDamage(3)
 		Boing()
 
 func punch():
-	#if you guys want to code we need an animation first
+	#if you guys want to code this we need an animation first
 	#easiest way I found is to make a hitbox appear from frame x to frame y
 	pass
 
@@ -161,15 +206,16 @@ func MovingRight():
 
 #IGNORE THE BROKEN CODE
 func Knockback(Enemy):
-	Accel = 0
+	Invicible = true
+	print("Invincible!")
+	Stunned = true
+	StunDelay = true
+	print("Stunned!")
 	var EnemyPosition = Enemy.get_parent().position.x
-	velocity.y = -500
-	print(PlayerPosition-EnemyPosition)
-	print(PlayerPosition)
-	print(EnemyPosition)
+	velocity.y = -700
+	position.y -= 10
 	
 	if (EnemyPosition > PlayerPosition):
-		#ENEMY TO THE LEFT
-		velocity.x = -750
+		velocity.x = -700
 	if (EnemyPosition < PlayerPosition):
-		velocity.x = 750
+		velocity.x = 700
