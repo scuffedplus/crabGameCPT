@@ -91,7 +91,7 @@ func _physics_process(delta):
 #ATTACKING LOGIC
 	if (Input.is_key_pressed(KEY_X)):
 		if (Input.is_action_pressed("ui_down")):
-			if (Midair && Poundability):
+			if (Midair && Poundability && !Stunned):
 				GroundPound()
 		else:
 			if (Input.is_action_pressed("ui_up")):
@@ -105,12 +105,12 @@ func _physics_process(delta):
 #LEFT AND RIGHT ACCELLERATION CODE
 	if (Input.is_key_pressed(KEY_SHIFT)):
 		if (Input.is_action_pressed("ui_left")):
-			if (velocity.x > -MaxRunSpeed && velocity.x <= 0):
+			if ((velocity.x > -MaxRunSpeed && velocity.x <= 0) or (Midair && velocity.x > -MaxRunSpeed)):
 				velocity.x -= Accel
 				FacingRight = false
 	
 		if (Input.is_action_pressed("ui_right")):
-			if (velocity.x < MaxRunSpeed && velocity.x >= 0):
+			if ((velocity.x < MaxRunSpeed && velocity.x >= 0) or (Midair && velocity.x < MaxRunSpeed)):
 				velocity.x += Accel
 				FacingRight = true
 	else:
@@ -121,35 +121,41 @@ func _physics_process(delta):
 			else:
 				velocity.x += Decel
 		
+		#Accelerate to the left unless moving right OR midair. Speed limited to MaxWalkSpeed
 		if (Input.is_action_pressed("ui_left")):
-			if (velocity.x > -MaxWalkSpeed && velocity.x <= 0):
+			if ((velocity.x > -MaxWalkSpeed && velocity.x <= 0) or (Midair && velocity.x > -MaxWalkSpeed)):
 				velocity.x -= Accel
-	
+		
+		#Accelerate to the right unless moving left OR midair. Speed limited to MaxWalkSpeed
 		if (Input.is_action_pressed("ui_right")):
-			if (velocity.x < MaxWalkSpeed && velocity.x >= 0):
+			if ((velocity.x < MaxWalkSpeed && velocity.x >= 0) or (Midair && velocity.x < MaxWalkSpeed)):
 				velocity.x += Accel
+
 #LEFT AND RIGHT DECELLERATION CODE
 
-	if (velocity.x <= Decel && velocity.x >= -Decel):
-		if (!HoldingMove):
-			velocity.x = 0
-			Decel = MinDecel
-	else:
-		#IF MOVING RIGHT AND HOLDING LEFT DECELERATE
-		if (velocity.x > Decel && Input.is_action_pressed("ui_left")):
-			velocity.x -= Decel
-		#IF MOVING LEFT AND HOLDING RIGHT DECELERATE
-		if (velocity.x < 0 && Input.is_action_pressed("ui_right")):
-			velocity.x += Decel
-		#IF HOLDING NOTHING DECELRATE
-		if (!HoldingMove):
-			if (velocity.x > Decel):
+#Decelerates if grounded and not holding an input
+#Also some very messed up code to make the rate of deceleration exponential
+	if (!Midair):
+		if (velocity.x <= Decel && velocity.x >= -Decel):
+			if (!HoldingMove):
+				velocity.x = 0
+				Decel = MinDecel
+		else:
+			#IF MOVING RIGHT AND HOLDING LEFT DECELERATE
+			if (velocity.x > Decel && Input.is_action_pressed("ui_left")):
 				velocity.x -= Decel
-			if (velocity.x < -Decel):
+			#IF MOVING LEFT AND HOLDING RIGHT DECELERATE
+			if (velocity.x < 0 && Input.is_action_pressed("ui_right")):
 				velocity.x += Decel
-			if (Decel < MaxDecel):
-				Decel = Decel * DecelMultiplier
-
+			#IF HOLDING NOTHING DECELRATE
+			if (!HoldingMove):
+				if (velocity.x > Decel):
+					velocity.x -= Decel
+				if (velocity.x < -Decel):
+					velocity.x += Decel
+				if (Decel < MaxDecel):
+					Decel = Decel * DecelMultiplier
+	
 	move_and_slide()
 
 func GroundPound():
@@ -161,10 +167,9 @@ func GroundPound():
 	await get_tree().create_timer(0.10).timeout
 	velocity.y -= GPSpeed
 
-#Resets the player after a groundpound
 func UnGroundPound():
-	print("Acceleration Reset")
 	Poundability = true
+	Stunned = false
 
 func TakeDamage(Damager):
 	CurrentHP -= Damager.GetDamage()
@@ -192,17 +197,19 @@ func punch():
 	#easiest way I found is to make a hitbox appear from frame x to frame y
 	pass
 
+#Called when bouncing on an enemy
+#Checks whether the player was groundpounding
 func Boing():
+	Stunned = false
 	if (Poundability == false):
 		UnGroundPound()
-		velocity.y = -velocity.y*1.25
+		velocity.y = -velocity.y
 	else:
 		velocity.y = -velocity.y
 
 #Returns true if the player is attempting to move to the right (X+)
 func MovingRight():
 	return(FacingRight)
-
 
 #IGNORE THE BROKEN CODE
 func Knockback(Enemy):
@@ -214,7 +221,6 @@ func Knockback(Enemy):
 	var EnemyPosition = Enemy.get_parent().position.x
 	velocity.y = -700
 	position.y -= 10
-	
 	if (EnemyPosition > PlayerPosition):
 		velocity.x = -700
 	if (EnemyPosition < PlayerPosition):

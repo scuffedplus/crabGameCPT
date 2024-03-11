@@ -1,11 +1,10 @@
-[gd_scene load_steps=16 format=3 uid="uid://b7ba3g73jo8y2"]
+[gd_scene load_steps=14 format=3 uid="uid://b7ba3g73jo8y2"]
 
-[ext_resource type="Texture2D" uid="uid://vod05aw7217s" path="res://Tileset (2).png" id="1_srdt6"]
-[ext_resource type="Script" path="res://CharacterBodyMovement2D.gd" id="2_5ndbo"]
-[ext_resource type="Texture2D" uid="uid://bubvyh6myossl" path="res://icon.svg" id="2_bfvet"]
-[ext_resource type="Script" path="res://enemy.gd" id="3_50qc6"]
-[ext_resource type="Script" path="res://Enemy hitbox.gd" id="5_huoak"]
-[ext_resource type="Script" path="res://Elevator.gd" id="5_xp72s"]
+[ext_resource type="Texture2D" uid="uid://vod05aw7217s" path="res://Textures/Tileset (2).png" id="1_srdt6"]
+[ext_resource type="Script" path="res://Player/CharacterBodyMovement2D.gd" id="2_5ndbo"]
+[ext_resource type="Texture2D" uid="uid://bubvyh6myossl" path="res://Textures/icon.svg" id="2_bfvet"]
+[ext_resource type="Script" path="res://Enemy Template/EnemyMovement.gd" id="3_50qc6"]
+[ext_resource type="Script" path="res://Enemy Template/Enemy hitbox.gd" id="5_huoak"]
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_2lug6"]
 
@@ -80,9 +79,6 @@ animations = [{
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_kakx3"]
 radius = 92.0
 height = 184.0
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_gqny5"]
-size = Vector2(26.4635, 20)
 
 [node name="NewScene" type="Node2D"]
 
@@ -171,7 +167,7 @@ shape = SubResource("CapsuleShape2D_kakx3")
 texture = ExtResource("2_bfvet")
 
 [node name="Enemy hitbox2" type="Area2D" parent="Enemies/BouncePads/Node2D" groups=["Enemies"]]
-position = Vector2(-716, -1378)
+position = Vector2(-759, -1228)
 collision_layer = 2
 collision_mask = 2
 monitoring = false
@@ -239,7 +235,7 @@ shape = SubResource("CapsuleShape2D_kakx3")
 texture = ExtResource("2_bfvet")
 
 [node name="Enemy hitbox6" type="Area2D" parent="Enemies/BouncePads/Node2D" groups=["Enemies"]]
-position = Vector2(-120, -1531)
+position = Vector2(-203, -1537)
 scale = Vector2(4.75647, 0.943091)
 collision_layer = 2
 collision_mask = 2
@@ -264,23 +260,6 @@ offset_bottom = -1739.0
 text = "You WIN!!!!!!!"
 
 [node name="CRNABFOWBDFHOABW" type="Node2D" parent="."]
-
-[node name="MovingEnvironment" type="Node2D" parent="."]
-
-[node name="Elevator" type="AnimatableBody2D" parent="MovingEnvironment"]
-script = ExtResource("5_xp72s")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="MovingEnvironment/Elevator"]
-position = Vector2(1638.55, -404)
-scale = Vector2(10.6903, -2.95981)
-shape = SubResource("RectangleShape2D_gqny5")
-
-[node name="AnimationPlayer" type="AnimationPlayer" parent="MovingEnvironment/Elevator"]
-
-[node name="Sprite2D" type="Sprite2D" parent="MovingEnvironment/Elevator/AnimationPlayer"]
-position = Vector2(1639.96, -405)
-scale = Vector2(2.21943, 0.46875)
-texture = ExtResource("2_bfvet")
 
 [connection signal="area_entered" from="CRAB/Controller/EnemyDetection" to="CRAB/Controller" method="_on_enemy_detection_area_entered"]
 [connection signal="tree_exited" from="Enemies/1/Enemy hitbox" to="Enemies/1" method="_on_enemy_hitbox_tree_exited"]
