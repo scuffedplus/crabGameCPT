@@ -1,8 +1,9 @@
-[gd_scene load_steps=14 format=3 uid="uid://b7ba3g73jo8y2"]
+[gd_scene load_steps=22 format=3 uid="uid://b7ba3g73jo8y2"]
 
 [ext_resource type="Texture2D" uid="uid://vod05aw7217s" path="res://Textures/Tileset (2).png" id="1_srdt6"]
 [ext_resource type="Script" path="res://Player/CharacterBodyMovement2D.gd" id="2_5ndbo"]
 [ext_resource type="Texture2D" uid="uid://bubvyh6myossl" path="res://Textures/icon.svg" id="2_bfvet"]
+[ext_resource type="Texture2D" uid="uid://dgkgsgqj3b3fy" path="res://Player/Animations/HorridSpriteSheet.png" id="3_2bnj7"]
 [ext_resource type="Script" path="res://Enemy Template/EnemyMovement.gd" id="3_50qc6"]
 [ext_resource type="Script" path="res://Enemy Template/Enemy hitbox.gd" id="5_huoak"]
 
@@ -60,10 +61,112 @@ physics_layer_0/collision_layer = 1
 sources/0 = SubResource("TileSetAtlasSource_i7ey5")
 sources/1 = SubResource("TileSetAtlasSource_6nwfv")
 
+[sub_resource type="Animation" id="Animation_ahcsw"]
+resource_name = "Idle"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.1),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="Animation" id="Animation_7nt7p"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="Animation" id="Animation_4k8pb"]
+resource_name = "Punch"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5, 6, 7, 0]
+}
+
+[sub_resource type="Animation" id="Animation_lqr5b"]
+resource_name = "Walk"
+length = 0.25
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [8, 9]
+}
+
+[sub_resource type="Animation" id="Animation_c60yk"]
+resource_name = "Jump"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [10]
+}
+
+[sub_resource type="Animation" id="Animation_ynmyr"]
+resource_name = "GroundPound"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(1),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [11]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_4mflg"]
+_data = {
+"GroundPound": SubResource("Animation_ynmyr"),
+"Idle": SubResource("Animation_ahcsw"),
+"Jump": SubResource("Animation_c60yk"),
+"Punch": SubResource("Animation_4k8pb"),
+"RESET": SubResource("Animation_7nt7p"),
+"Walk": SubResource("Animation_lqr5b")
+}
+
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_6fwq0"]
-size = Vector2(128, 127)
+size = Vector2(80.2669, 122.692)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_weufc"]
+size = Vector2(38.1709, 31.3573)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_gsr0c"]
 animations = [{
@@ -103,24 +206,40 @@ polygon = PackedVector2Array(-2, -376, 573, -381, 573, 1, -2, -1)
 [node name="CRAB" type="Node2D" parent="."]
 
 [node name="Controller" type="CharacterBody2D" parent="CRAB"]
-position = Vector2(123, -478)
+position = Vector2(227, -541)
 script = ExtResource("2_5ndbo")
 
 [node name="Camera2D" type="Camera2D" parent="CRAB/Controller"]
+position = Vector2(-1, -41)
+zoom = Vector2(0.5, 0.5)
 
 [node name="Sprite2D" type="Sprite2D" parent="CRAB/Controller"]
-texture = ExtResource("2_bfvet")
+position = Vector2(-2, -1.00002)
+scale = Vector2(1.96962, 1.96962)
+texture = ExtResource("3_2bnj7")
+hframes = 4
+vframes = 3
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="CRAB/Controller/Sprite2D"]
+libraries = {
+"": SubResource("AnimationLibrary_4mflg")
+}
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CRAB/Controller"]
-position = Vector2(0, -0.5)
+visible = false
+position = Vector2(-2, 22)
+scale = Vector2(3.13952, 1.93167)
 shape = SubResource("RectangleShape2D_6fwq0")
 
 [node name="EnemyDetection" type="Area2D" parent="CRAB/Controller"]
+position = Vector2(-5, 25)
 collision_layer = 0
 collision_mask = 2
 monitorable = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CRAB/Controller/EnemyDetection"]
+visible = false
+position = Vector2(3, -18)
 rotation = -3.14159
 scale = Vector2(6.65429, -6.56945)
 shape = SubResource("RectangleShape2D_weufc")
@@ -130,6 +249,7 @@ shape = SubResource("RectangleShape2D_weufc")
 [node name="1" type="AnimatedSprite2D" parent="Enemies" groups=["Enemies"]]
 position = Vector2(653, -444)
 sprite_frames = SubResource("SpriteFrames_gsr0c")
+frame_progress = 0.948606
 script = ExtResource("3_50qc6")
 
 [node name="Enemy hitbox" type="Area2D" parent="Enemies/1" groups=["Enemies"]]

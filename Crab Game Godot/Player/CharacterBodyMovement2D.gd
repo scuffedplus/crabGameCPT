@@ -7,6 +7,8 @@ const GPSpeed = -1200
 const Bounce = -750
 const GPBounce = -1200
 
+@onready var animation = $Sprite2D/AnimationPlayer
+
 var PlayerPosition = position.x
 
 const MaxHP = 3
