@@ -12,6 +12,8 @@ var Midair
 var Punching
 var GroundPounding
 
+var HoldingMove
+var HoldingNothing
 
 var FacingRight
 const GPSpeed = -1200
@@ -19,7 +21,7 @@ const GPSpeed = -1200
 const Bounce = -750
 const GPBounce = -1200
 
-#Gets the animatino player and makes it a variable
+#Gets the animation player and makes it a variable
 @onready var animation = $Sprite2D/AnimationPlayer
 
 var PlayerPosition = position.x
@@ -74,24 +76,34 @@ It's a bit of a mess.
 """
 
 func _physics_process(delta):
-	animation.play("Walk", 1, 1.0, true)
-	print(CurrentHP)
-	var Walking = false
-	var Midair = false
-	var Punching = false
-	var GroundPounding = false
+	animation.play("Idle")
+	Walking = false
+	Midair = false
+	Punching = false
+	GroundPounding = false
+	HoldingMove = Input.is_action_pressed("ui_right") or Input.is_action_pressed("ui_left")
+	HoldingNothing = Input.is_action_pressed("ui_right") && Input.is_action_pressed("ui_left")
 	
 	PlayerPosition = position.x
-
+	
+	if (HoldingMove):
+	#	if (animation.is_playing()):
+	#		if (animation.current_animation == "Walk"):
+	#			pass
+	#		else:
+		#if (String(animation.current_animation) != "Walk"):
+			animation.play("Walk")
+	
 	Midair = !is_on_floor()
 	
 #JUMPING CODE
-	var HoldingMove = Input.is_action_pressed("ui_right") && Input.is_action_pressed("ui_left")
-	
 	if (Midair):
+		animation.play("Jump")
 		MaxDecel = MidAirMaxDecel
 		if (Poundability):
 			velocity.y += gravity * delta
+		else:
+			animation.play("GroundPound")
 	else:
 		MaxDecel = OnGroundMaxDecel
 		if (Poundability == false):
@@ -156,7 +168,7 @@ func _physics_process(delta):
 #Also some very messed up code to make the rate of deceleration exponential
 	if (!Midair):
 		if (velocity.x <= Decel && velocity.x >= -Decel):
-			if (!HoldingMove):
+			if (!HoldingNothing):
 				velocity.x = 0
 				Decel = MinDecel
 		else:
@@ -167,7 +179,7 @@ func _physics_process(delta):
 			if (velocity.x < 0 && Input.is_action_pressed("ui_right")):
 				velocity.x += Decel
 			#IF HOLDING NOTHING DECELRATE
-			if (!HoldingMove):
+			if (!HoldingNothing):
 				if (velocity.x > Decel):
 					velocity.x -= Decel
 				if (velocity.x < -Decel):
@@ -177,7 +189,7 @@ func _physics_process(delta):
 	
 	for i in len(AnimPriority):
 		if (AnimPriority[i] == true):
-			animation.play(AnimNames[i])
+			#animation.play(AnimNames[i])
 			break
 	move_and_slide()
 
@@ -217,7 +229,7 @@ func _on_enemy_detection_area_entered(area):
 		Boing()
 
 func punch():
-	animation.play("Punch")
+	#animation.play("Punch")
 	#if you guys want to code this we need an animation first
 	#easiest way I found is to make a hitbox appear from frame x to frame y
 	pass
