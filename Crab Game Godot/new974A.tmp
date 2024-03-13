@@ -1,0 +1,418 @@
+[gd_scene load_steps=24 format=3 uid="uid://b7ba3g73jo8y2"]
+
+[ext_resource type="Texture2D" uid="uid://vod05aw7217s" path="res://Textures/Tileset (2).png" id="1_srdt6"]
+[ext_resource type="Script" path="res://Player/CharacterBodyMovement2D.gd" id="2_5ndbo"]
+[ext_resource type="Texture2D" uid="uid://bubvyh6myossl" path="res://Textures/icon.svg" id="2_bfvet"]
+[ext_resource type="Texture2D" uid="uid://dgkgsgqj3b3fy" path="res://Player/Animations/HorridSpriteSheet.png" id="3_2bnj7"]
+[ext_resource type="Script" path="res://Enemy Template/EnemyMovement.gd" id="3_50qc6"]
+[ext_resource type="Script" path="res://Enemy Template/Enemy hitbox.gd" id="5_huoak"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_2lug6"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_i7ey5"]
+texture = SubResource("CompressedTexture2D_2lug6")
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_6nwfv"]
+texture = ExtResource("1_srdt6")
+texture_region_size = Vector2i(192, 192)
+4:4/0 = 0
+4:4/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+4:4/0/physics_layer_0/angular_velocity = 0.0
+1:0/0 = 0
+1:0/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+1:0/0/physics_layer_0/angular_velocity = 0.0
+0:0/0 = 0
+0:0/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+0:0/0/physics_layer_0/angular_velocity = 0.0
+2:0/0 = 0
+2:0/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+2:0/0/physics_layer_0/angular_velocity = 0.0
+3:0/0 = 0
+3:0/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+3:0/0/physics_layer_0/angular_velocity = 0.0
+3:1/0 = 0
+3:1/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+3:1/0/physics_layer_0/angular_velocity = 0.0
+2:1/0 = 0
+2:1/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+2:1/0/physics_layer_0/angular_velocity = 0.0
+1:1/0 = 0
+1:1/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+1:1/0/physics_layer_0/angular_velocity = 0.0
+1:2/0 = 0
+1:2/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+1:2/0/physics_layer_0/angular_velocity = 0.0
+2:2/0 = 0
+2:2/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+2:2/0/physics_layer_0/angular_velocity = 0.0
+2:3/0 = 0
+2:3/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+2:3/0/physics_layer_0/angular_velocity = 0.0
+1:3/0 = 0
+1:3/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+1:3/0/physics_layer_0/angular_velocity = 0.0
+3:4/0 = 0
+3:4/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+3:4/0/physics_layer_0/angular_velocity = 0.0
+
+[sub_resource type="TileSet" id="TileSet_mmwi2"]
+tile_size = Vector2i(192, 192)
+physics_layer_0/collision_layer = 1
+sources/0 = SubResource("TileSetAtlasSource_i7ey5")
+sources/1 = SubResource("TileSetAtlasSource_6nwfv")
+
+[sub_resource type="Animation" id="Animation_ynmyr"]
+resource_name = "GroundPound"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(1),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [11]
+}
+
+[sub_resource type="Animation" id="Animation_ahcsw"]
+resource_name = "Idle"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.1),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="Animation" id="Animation_c60yk"]
+resource_name = "Jump"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [10]
+}
+
+[sub_resource type="Animation" id="Animation_4k8pb"]
+resource_name = "Punch"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5, 6, 7, 0]
+}
+
+[sub_resource type="Animation" id="Animation_7nt7p"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="Animation" id="Animation_lqr5b"]
+resource_name = "Walk"
+length = 0.25
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [8, 9]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_4mflg"]
+_data = {
+"GroundPound": SubResource("Animation_ynmyr"),
+"Idle": SubResource("Animation_ahcsw"),
+"Jump": SubResource("Animation_c60yk"),
+"Punch": SubResource("Animation_4k8pb"),
+"RESET": SubResource("Animation_7nt7p"),
+"Walk": SubResource("Animation_lqr5b")
+}
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6fwq0"]
+size = Vector2(80.2669, 122.692)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_weufc"]
+size = Vector2(38.1709, 31.3573)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_gsr0c"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_bfvet")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_kakx3"]
+radius = 92.0
+height = 184.0
+
+[sub_resource type="Animation" id="Animation_0b675"]
+resource_name = "Walking"
+loop_mode = 2
+step = 0.0333333
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.5, 0.8, 1),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0, -444), Vector2(50, -444), Vector2(500, -444), Vector2(950, -444), Vector2(1000, -444)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_hnxnk"]
+_data = {
+"Walking": SubResource("Animation_0b675")
+}
+
+[node name="NewScene" type="Node2D"]
+
+[node name="Testing Environment\\" type="Node2D" parent="."]
+
+[node name="TileMap" type="TileMap" parent="Testing Environment\\"]
+tile_set = SubResource("TileSet_mmwi2")
+format = 2
+layer_0/name = "Terrain"
+layer_0/tile_data = PackedInt32Array(-65536, 65537, 3, -65535, 65537, 3, -65534, 65537, 3, -131070, 65537, 3, -131071, 65537, 3, -131072, 65537, 3, -11, 65537, 3, -10, 65537, 3, -9, 65537, 3, -8, 65537, 3, -7, 65537, 3, -6, 65537, 3, -5, 65537, 3, -4, 65537, 3, -3, 65537, 3, -2, 65537, 3, -1, 65537, 3, -65533, 65537, 3, -65532, 65537, 3, -65531, 65537, 3, -65530, 65537, 3, -65529, 65537, 3, -65528, 65537, 3, -65527, 65537, 3, -65526, 65537, 3, -65525, 65537, 3, -65524, 65537, 3, -65523, 65537, 3, -65522, 65537, 3, -131058, 65537, 3, -131059, 65537, 3, -131060, 65537, 3, -131061, 65537, 3, -131062, 65537, 3, -131063, 65537, 3, -131064, 65537, 3, -131065, 65537, 3, -131066, 65537, 3, -131067, 65537, 3, -131068, 65537, 3, -131069, 65537, 3, -65537, 65537, 3, -65538, 65537, 3, -65539, 65537, 3, -65540, 65537, 3, -65541, 65537, 3, -65542, 65537, 3, -65543, 65537, 3, -65544, 65537, 3, -65545, 65537, 3, -65546, 65537, 3, -65547, 65537, 3)
+layer_1/name = "Grass"
+layer_1/tile_data = PackedInt32Array(-131072, 65537, 0, -65537, 1, 0, -131071, 65537, 0, -131070, 65537, 0, -131069, 196609, 0, -65534, 196609, 0, -65535, 196609, 0, -65536, 196609, 0)
+
+[node name="StaticBody2D" type="StaticBody2D" parent="Testing Environment\\"]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Testing Environment\\/StaticBody2D"]
+position = Vector2(-2146.21, 0)
+scale = Vector2(8.86413, 1)
+build_mode = 1
+polygon = PackedVector2Array(-2, -376, 573, -381, 573, 1, -2, -1)
+
+[node name="CRAB" type="Node2D" parent="."]
+
+[node name="Controller" type="CharacterBody2D" parent="CRAB"]
+position = Vector2(227, -541)
+script = ExtResource("2_5ndbo")
+
+[node name="Camera2D" type="Camera2D" parent="CRAB/Controller"]
+position = Vector2(-1, -41)
+zoom = Vector2(0.5, 0.5)
+
+[node name="Sprite2D" type="Sprite2D" parent="CRAB/Controller"]
+position = Vector2(-2, -1.00002)
+scale = Vector2(1.96962, 1.96962)
+texture = ExtResource("3_2bnj7")
+hframes = 4
+vframes = 3
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="CRAB/Controller/Sprite2D"]
+libraries = {
+"": SubResource("AnimationLibrary_4mflg")
+}
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CRAB/Controller"]
+visible = false
+position = Vector2(-2, 22)
+scale = Vector2(3.13952, 1.93167)
+shape = SubResource("RectangleShape2D_6fwq0")
+
+[node name="EnemyDetection" type="Area2D" parent="CRAB/Controller"]
+position = Vector2(-5, 25)
+collision_layer = 0
+collision_mask = 2
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CRAB/Controller/EnemyDetection"]
+visible = false
+position = Vector2(3, -18)
+rotation = -3.14159
+scale = Vector2(6.65429, -6.56945)
+shape = SubResource("RectangleShape2D_weufc")
+
+[node name="Enemies" type="Node2D" parent="."]
+
+[node name="1" type="AnimatedSprite2D" parent="Enemies" groups=["Enemies"]]
+position = Vector2(116.829, -444)
+sprite_frames = SubResource("SpriteFrames_gsr0c")
+frame_progress = 0.948606
+script = ExtResource("3_50qc6")
+
+[node name="Enemy hitbox" type="Area2D" parent="Enemies/1" groups=["Enemies"]]
+collision_layer = 2
+collision_mask = 2
+monitoring = false
+script = ExtResource("5_huoak")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Enemies/1/Enemy hitbox"]
+light_mask = 2
+visibility_layer = 2
+position = Vector2(-1, 1)
+scale = Vector2(0.720561, 0.720561)
+shape = SubResource("CapsuleShape2D_kakx3")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Enemies/1"]
+libraries = {
+"": SubResource("AnimationLibrary_hnxnk")
+}
+
+[node name="BouncePads" type="Node2D" parent="Enemies"]
+
+[node name="Node2D" type="Node2D" parent="Enemies/BouncePads"]
+
+[node name="Enemy hitbox" type="Area2D" parent="Enemies/BouncePads/Node2D" groups=["Enemies"]]
+position = Vector2(1016, -714)
+collision_layer = 2
+collision_mask = 2
+monitoring = false
+script = ExtResource("5_huoak")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Enemies/BouncePads/Node2D/Enemy hitbox"]
+light_mask = 2
+visibility_layer = 2
+position = Vector2(-1, 1)
+scale = Vector2(0.720561, 0.720561)
+shape = SubResource("CapsuleShape2D_kakx3")
+
+[node name="Sprite2D" type="Sprite2D" parent="Enemies/BouncePads/Node2D/Enemy hitbox"]
+texture = ExtResource("2_bfvet")
+
+[node name="Enemy hitbox2" type="Area2D" parent="Enemies/BouncePads/Node2D" groups=["Enemies"]]
+position = Vector2(-759, -1228)
+collision_layer = 2
+collision_mask = 2
+monitoring = false
+script = ExtResource("5_huoak")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Enemies/BouncePads/Node2D/Enemy hitbox2"]
+light_mask = 2
+visibility_layer = 2
+position = Vector2(-1, 1)
+scale = Vector2(0.720561, 0.720561)
+shape = SubResource("CapsuleShape2D_kakx3")
+
+[node name="Sprite2D" type="Sprite2D" parent="Enemies/BouncePads/Node2D/Enemy hitbox2"]
+texture = ExtResource("2_bfvet")
+
+[node name="Enemy hitbox3" type="Area2D" parent="Enemies/BouncePads/Node2D" groups=["Enemies"]]
+position = Vector2(-473, -1003)
+collision_layer = 2
+collision_mask = 2
+monitoring = false
+script = ExtResource("5_huoak")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Enemies/BouncePads/Node2D/Enemy hitbox3"]
+light_mask = 2
+visibility_layer = 2
+position = Vector2(-1, 1)
+scale = Vector2(0.720561, 0.720561)
+shape = SubResource("CapsuleShape2D_kakx3")
+
+[node name="Sprite2D" type="Sprite2D" parent="Enemies/BouncePads/Node2D/Enemy hitbox3"]
+texture = ExtResource("2_bfvet")
+
+[node name="Enemy hitbox4" type="Area2D" parent="Enemies/BouncePads/Node2D" groups=["Enemies"]]
+position = Vector2(23, -1114)
+collision_layer = 2
+collision_mask = 2
+monitoring = false
+script = ExtResource("5_huoak")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Enemies/BouncePads/Node2D/Enemy hitbox4"]
+light_mask = 2
+visibility_layer = 2
+position = Vector2(-1, 1)
+scale = Vector2(0.720561, 0.720561)
+shape = SubResource("CapsuleShape2D_kakx3")
+
+[node name="Sprite2D" type="Sprite2D" parent="Enemies/BouncePads/Node2D/Enemy hitbox4"]
+texture = ExtResource("2_bfvet")
+
+[node name="Enemy hitbox5" type="Area2D" parent="Enemies/BouncePads/Node2D" groups=["Enemies"]]
+position = Vector2(442, -884)
+collision_layer = 2
+collision_mask = 2
+monitoring = false
+script = ExtResource("5_huoak")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Enemies/BouncePads/Node2D/Enemy hitbox5"]
+light_mask = 2
+visibility_layer = 2
+position = Vector2(-1, 1)
+scale = Vector2(0.720561, 0.720561)
+shape = SubResource("CapsuleShape2D_kakx3")
+
+[node name="Sprite2D" type="Sprite2D" parent="Enemies/BouncePads/Node2D/Enemy hitbox5"]
+texture = ExtResource("2_bfvet")
+
+[node name="Enemy hitbox6" type="Area2D" parent="Enemies/BouncePads/Node2D" groups=["Enemies"]]
+position = Vector2(-203, -1537)
+scale = Vector2(4.75647, 0.943091)
+collision_layer = 2
+collision_mask = 2
+monitoring = false
+script = ExtResource("5_huoak")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Enemies/BouncePads/Node2D/Enemy hitbox6"]
+light_mask = 2
+visibility_layer = 2
+position = Vector2(-1, 1)
+scale = Vector2(0.720561, 0.720561)
+shape = SubResource("CapsuleShape2D_kakx3")
+
+[node name="Sprite2D" type="Sprite2D" parent="Enemies/BouncePads/Node2D/Enemy hitbox6"]
+texture = ExtResource("2_bfvet")
+
+[node name="Label" type="Label" parent="Enemies/BouncePads"]
+offset_left = -263.0
+offset_top = -1762.0
+offset_right = -165.0
+offset_bottom = -1739.0
+text = "You WIN!!!!!!!"
+
+[node name="CRNABFOWBDFHOABW" type="Node2D" parent="."]
+
+[connection signal="area_entered" from="CRAB/Controller/EnemyDetection" to="CRAB/Controller" method="_on_enemy_detection_area_entered"]
+[connection signal="tree_exited" from="Enemies/1/Enemy hitbox" to="Enemies/1" method="_on_enemy_hitbox_tree_exited"]
+[connection signal="tree_exited" from="Enemies/BouncePads/Node2D/Enemy hitbox" to="Enemies/1" method="_on_enemy_hitbox_tree_exited"]
+[connection signal="tree_exited" from="Enemies/BouncePads/Node2D/Enemy hitbox2" to="Enemies/1" method="_on_enemy_hitbox_tree_exited"]
+[connection signal="tree_exited" from="Enemies/BouncePads/Node2D/Enemy hitbox3" to="Enemies/1" method="_on_enemy_hitbox_tree_exited"]
+[connection signal="tree_exited" from="Enemies/BouncePads/Node2D/Enemy hitbox4" to="Enemies/1" method="_on_enemy_hitbox_tree_exited"]
+[connection signal="tree_exited" from="Enemies/BouncePads/Node2D/Enemy hitbox5" to="Enemies/1" method="_on_enemy_hitbox_tree_exited"]
+[connection signal="tree_exited" from="Enemies/BouncePads/Node2D/Enemy hitbox6" to="Enemies/1" method="_on_enemy_hitbox_tree_exited"]
