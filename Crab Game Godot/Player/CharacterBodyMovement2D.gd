@@ -1,18 +1,31 @@
 extends CharacterBody2D
 
+#Each item in this list corresponds to an animation
+#Closer to first means higher priority
+#If no conditions are met plays idle animation
+var AnimPriority = [Punching, GroundPounding, Midair, Walking, true]
+var AnimNames = ["Punch", "GroundPound", "Jump", "Walk", "Idle"]
+#Animatable player states
+var Walking
+#Midair is also used for some other things with jumping/bouncing
 var Midair
+var Punching
+var GroundPounding
+
+
 var FacingRight
 const GPSpeed = -1200
 
 const Bounce = -750
 const GPBounce = -1200
 
+#Gets the animatino player and makes it a variable
 @onready var animation = $Sprite2D/AnimationPlayer
 
 var PlayerPosition = position.x
 
 const MaxHP = 3
-var CurrentHP = 300
+var CurrentHP = 3
 
 const MaxWalkSpeed = 250
 const MaxRunSpeed = 600
@@ -52,16 +65,21 @@ var StunDelay = false
 #StunDelay is used to delay the inversion of Stunned by one frame if enabled
 #This will probably break something down the line but we'll cross that bridge when we get to it.
 
-#If invicible
-var Invicible = false
+#If Invincible
+var Invincible = false
 
 """
 ALL of the above variables are used by the groundpound script.
 It's a bit of a mess.
-NOTE:
 """
 
 func _physics_process(delta):
+	animation.play("Walk", 1, 1.0, true)
+	print(CurrentHP)
+	var Walking = false
+	var Midair = false
+	var Punching = false
+	var GroundPounding = false
 	
 	PlayerPosition = position.x
 
@@ -78,8 +96,8 @@ func _physics_process(delta):
 		MaxDecel = OnGroundMaxDecel
 		if (Poundability == false):
 			UnGroundPound()
-		Invicible = false
 		if (StunDelay == false):
+			Invincible = false
 			if (Stunned):
 				Stunned = false
 	
@@ -96,8 +114,7 @@ func _physics_process(delta):
 			if (Midair && Poundability && !Stunned):
 				GroundPound()
 		else:
-			if (Input.is_action_pressed("ui_up")):
-				punch()
+			punch()
 				
 
 #JUMPING LOGIC
@@ -158,6 +175,10 @@ func _physics_process(delta):
 				if (Decel < MaxDecel):
 					Decel = Decel * DecelMultiplier
 	
+	for i in len(AnimPriority):
+		if (AnimPriority[i] == true):
+			animation.play(AnimNames[i])
+			break
 	move_and_slide()
 
 func GroundPound():
@@ -174,11 +195,12 @@ func UnGroundPound():
 	Stunned = false
 
 func TakeDamage(Damager):
-	CurrentHP -= Damager.GetDamage()
-	print("Youch!!!")
+	if (Invincible == false):
+		CurrentHP -= Damager.GetDamage()
+		print("Youch!!!")
+		if (CurrentHP == 0):
+			die()
 	Knockback(Damager)
-	if (CurrentHP == 0):
-		die()
 
 func die():
 	print("You Died")
@@ -195,6 +217,7 @@ func _on_enemy_detection_area_entered(area):
 		Boing()
 
 func punch():
+	animation.play("Punch")
 	#if you guys want to code this we need an animation first
 	#easiest way I found is to make a hitbox appear from frame x to frame y
 	pass
@@ -215,11 +238,9 @@ func MovingRight():
 
 #IGNORE THE BROKEN CODE
 func Knockback(Enemy):
-	Invicible = true
-	print("Invincible!")
+	Invincible = true
 	Stunned = true
 	StunDelay = true
-	print("Stunned!")
 	var EnemyPosition = Enemy.get_parent().position.x
 	velocity.y = -700
 	position.y -= 10
