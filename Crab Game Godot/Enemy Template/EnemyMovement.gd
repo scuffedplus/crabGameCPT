@@ -9,22 +9,16 @@ func _ready():
 @onready var animator = $AnimationPlayer
 
 func anim():
-	animator.play("Walking")
+	pass
+	#animator.play("Walking")
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	i = i+1
-	if i == walkdist:
-		anim()
+	if i <= walkdist:
+		position.x = position.x + dir
 	else:
-		if i > walkdist:
-			i = 0
-		
-#
-#	if i <= walkdist:
-#		position.x = position.x + dir
-#	else:
-#		i = 0
-#		dir = dir * -1
+		i = 0
+		dir = dir * -1
 
 
 func _on_enemy_hitbox_tree_exited():

@@ -1,5 +1,13 @@
 extends CharacterBody2D
 
+const MaxJumpHeight = 3000
+var CurrentJumpHeight = 0
+var Jumping = false
+const JUMP_VELOCITY = 600.0
+const JUMP_SPEED = 15
+
+const MaxFallSpeed = -20
+
 #Each item in this list corresponds to an animation
 #Closer to first means higher priority
 #If no conditions are met plays idle animation
@@ -42,8 +50,6 @@ var MaxDecel = 25
 #The maximum deceleration changes depending on whether the player is grounded.
 const MidAirMaxDecel = 8
 const OnGroundMaxDecel = 25
-
-const JUMP_VELOCITY = -1000.0
 
 # Get the gravity from the project settings to be synced with RigidBody nodes.
 var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")*2
@@ -96,15 +102,19 @@ func _physics_process(delta):
 	
 	Midair = !is_on_floor()
 	
-#JUMPING CODE
+#Midair CODE
 	if (Midair):
 		animation.play("Jump")
 		MaxDecel = MidAirMaxDecel
 		if (Poundability):
-			velocity.y += gravity * delta
+			if (velocity.y > MaxFallSpeed):
+				velocity.y += gravity * delta
 		else:
 			animation.play("GroundPound")
 	else:
+		CurrentJumpHeight = 0
+		Jumping = false
+		
 		MaxDecel = OnGroundMaxDecel
 		if (Poundability == false):
 			UnGroundPound()
@@ -130,8 +140,15 @@ func _physics_process(delta):
 				
 
 #JUMPING LOGIC
-	if (Input.is_key_pressed(KEY_Z) and is_on_floor()):
-		velocity.y = JUMP_VELOCITY
+	if (Input.is_key_pressed(KEY_Z) and (is_on_floor()) or Jumping):
+		Jumping = true
+		if ((CurrentJumpHeight < MaxJumpHeight) && Input.is_key_pressed(KEY_Z)):
+			CurrentJumpHeight += JUMP_SPEED
+			print("CURRENT JH " + str(CurrentJumpHeight))
+			position.y -= JUMP_SPEED
+		else:
+			velocity.y = -JUMP_VELOCITY
+			Jumping = false
 
 #LEFT AND RIGHT ACCELLERATION CODE
 	if (Input.is_key_pressed(KEY_SHIFT)):
