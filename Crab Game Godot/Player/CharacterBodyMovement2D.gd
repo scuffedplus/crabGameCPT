@@ -1,13 +1,5 @@
 extends CharacterBody2D
 
-const MaxJumpHeight = 3000
-var CurrentJumpHeight = 0
-var Jumping = false
-const JUMP_VELOCITY = 600.0
-const JUMP_SPEED = 15
-
-const MaxFallSpeed = -20
-
 #Each item in this list corresponds to an animation
 #Closer to first means higher priority
 #If no conditions are met plays idle animation
@@ -20,8 +12,6 @@ var Midair
 var Punching
 var GroundPounding
 
-var HoldingMove
-var HoldingNothing
 
 var FacingRight
 const GPSpeed = -1200
@@ -29,7 +19,7 @@ const GPSpeed = -1200
 const Bounce = -750
 const GPBounce = -1200
 
-#Gets the animation player and makes it a variable
+#Gets the animatino player and makes it a variable
 @onready var animation = $Sprite2D/AnimationPlayer
 
 var PlayerPosition = position.x
@@ -50,6 +40,8 @@ var MaxDecel = 25
 #The maximum deceleration changes depending on whether the player is grounded.
 const MidAirMaxDecel = 8
 const OnGroundMaxDecel = 25
+
+const JUMP_VELOCITY = -1000.0
 
 # Get the gravity from the project settings to be synced with RigidBody nodes.
 var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")*2
@@ -82,39 +74,24 @@ It's a bit of a mess.
 """
 
 func _physics_process(delta):
-	animation.play("Idle")
-	Walking = false
-	Midair = false
-	Punching = false
-	GroundPounding = false
-	HoldingMove = Input.is_action_pressed("ui_right") or Input.is_action_pressed("ui_left")
-	HoldingNothing = Input.is_action_pressed("ui_right") && Input.is_action_pressed("ui_left")
+	animation.play("Walk", 1, 1.0, true)
+	var Walking = false
+	var Midair = false
+	var Punching = false
+	var GroundPounding = false
 	
 	PlayerPosition = position.x
-	
-	if (HoldingMove):
-	#	if (animation.is_playing()):
-	#		if (animation.current_animation == "Walk"):
-	#			pass
-	#		else:
-		#if (String(animation.current_animation) != "Walk"):
-			animation.play("Walk")
-	
+
 	Midair = !is_on_floor()
 	
-#Midair CODE
+#JUMPING CODE
+	var HoldingMove = Input.is_action_pressed("ui_right") && Input.is_action_pressed("ui_left")
+	
 	if (Midair):
-		animation.play("Jump")
 		MaxDecel = MidAirMaxDecel
 		if (Poundability):
-			if (velocity.y > MaxFallSpeed):
-				velocity.y += gravity * delta
-		else:
-			animation.play("GroundPound")
+			velocity.y += gravity * delta
 	else:
-		CurrentJumpHeight = 0
-		Jumping = false
-		
 		MaxDecel = OnGroundMaxDecel
 		if (Poundability == false):
 			UnGroundPound()
@@ -140,15 +117,8 @@ func _physics_process(delta):
 				
 
 #JUMPING LOGIC
-	if (Input.is_key_pressed(KEY_Z) and (is_on_floor()) or Jumping):
-		Jumping = true
-		if ((CurrentJumpHeight < MaxJumpHeight) && Input.is_key_pressed(KEY_Z)):
-			CurrentJumpHeight += JUMP_SPEED
-			print("CURRENT JH " + str(CurrentJumpHeight))
-			position.y -= JUMP_SPEED
-		else:
-			velocity.y = -JUMP_VELOCITY
-			Jumping = false
+	if (Input.is_key_pressed(KEY_Z) and is_on_floor()):
+		velocity.y = JUMP_VELOCITY
 
 #LEFT AND RIGHT ACCELLERATION CODE
 	if (Input.is_key_pressed(KEY_SHIFT)):
@@ -174,7 +144,7 @@ func _physics_process(delta):
 			if ((velocity.x > -MaxWalkSpeed && velocity.x <= 0) or (Midair && velocity.x > -MaxWalkSpeed)):
 				velocity.x -= Accel
 		
-		#Accelerate to the right unless moving left OR midair. Speed limited to MaxWalkSpeed
+		#Accelerate to the rightx unless moving left OR midair. Speed limited to MaxWalkSpeed
 		if (Input.is_action_pressed("ui_right")):
 			if ((velocity.x < MaxWalkSpeed && velocity.x >= 0) or (Midair && velocity.x < MaxWalkSpeed)):
 				velocity.x += Accel
@@ -185,7 +155,7 @@ func _physics_process(delta):
 #Also some very messed up code to make the rate of deceleration exponential
 	if (!Midair):
 		if (velocity.x <= Decel && velocity.x >= -Decel):
-			if (!HoldingNothing):
+			if (!HoldingMove):
 				velocity.x = 0
 				Decel = MinDecel
 		else:
@@ -196,7 +166,7 @@ func _physics_process(delta):
 			if (velocity.x < 0 && Input.is_action_pressed("ui_right")):
 				velocity.x += Decel
 			#IF HOLDING NOTHING DECELRATE
-			if (!HoldingNothing):
+			if (!HoldingMove):
 				if (velocity.x > Decel):
 					velocity.x -= Decel
 				if (velocity.x < -Decel):
@@ -206,7 +176,7 @@ func _physics_process(delta):
 	
 	for i in len(AnimPriority):
 		if (AnimPriority[i] == true):
-			#animation.play(AnimNames[i])
+			animation.play(AnimNames[i])
 			break
 	move_and_slide()
 
@@ -215,7 +185,6 @@ func GroundPound():
 	velocity.y = 0
 	velocity.x = 0
 	Stunned = true
-	print("Stunned!")
 	await get_tree().create_timer(0.10).timeout
 	velocity.y -= GPSpeed
 
@@ -246,7 +215,7 @@ func _on_enemy_detection_area_entered(area):
 		Boing()
 
 func punch():
-	#animation.play("Punch")
+	animation.play("Punch")
 	#if you guys want to code this we need an animation first
 	#easiest way I found is to make a hitbox appear from frame x to frame y
 	pass

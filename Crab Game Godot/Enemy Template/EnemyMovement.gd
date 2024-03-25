@@ -8,10 +8,6 @@ func _ready():
 	pass
 @onready var animator = $AnimationPlayer
 
-func anim():
-	pass
-	#animator.play("Walking")
-# Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	i = i+1
 	if i <= walkdist:
@@ -19,7 +15,6 @@ func _process(delta):
 	else:
 		i = 0
 		dir = dir * -1
-
 
 func _on_enemy_hitbox_tree_exited():
 	queue_free()
