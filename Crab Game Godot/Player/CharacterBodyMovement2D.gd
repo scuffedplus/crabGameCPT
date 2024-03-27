@@ -13,7 +13,7 @@ var PlayerPosition = position.x
 
 const MaxHP = 3
 var CurrentHP = 300
-
+var JumpState = false
 const MaxWalkSpeed = 250
 const MaxRunSpeed = 600
 var Accel = 100
@@ -75,6 +75,7 @@ func _physics_process(delta):
 		if (Poundability):
 			velocity.y += gravity * delta
 	else:
+		JumpState = false
 		MaxDecel = OnGroundMaxDecel
 		if (Poundability == false):
 			UnGroundPound()
@@ -103,6 +104,10 @@ func _physics_process(delta):
 #JUMPING LOGIC
 	if (Input.is_key_pressed(KEY_Z) and is_on_floor()):
 		velocity.y = JUMP_VELOCITY
+		JumpState = true
+	if (JumpState):
+		if (!Input.is_key_pressed(KEY_Z) && velocity.y < 0):
+			velocity.y = velocity.y/10
 
 #LEFT AND RIGHT ACCELLERATION CODE
 	if (Input.is_key_pressed(KEY_SHIFT)):
@@ -202,6 +207,7 @@ func punch():
 #Called when bouncing on an enemy
 #Checks whether the player was groundpounding
 func Boing():
+	JumpState = false
 	Stunned = false
 	if (Poundability == false):
 		UnGroundPound()
