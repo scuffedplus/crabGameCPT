@@ -6,14 +6,11 @@ var enemNum = 3
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	pass
-@onready var animator = $AnimationPlayer
 
-func anim():
-	pass
-	#animator.play("Walking")
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	i = i+1
+
 	if i <= walkdist:
 		position.x = position.x + dir
 	else:
