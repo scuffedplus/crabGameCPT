@@ -1,5 +1,8 @@
 extends CharacterBody2D
 
+var Punching = false
+var Falling = false
+
 var Midair
 var FacingRight
 const GPSpeed = -1200
@@ -7,15 +10,15 @@ const GPSpeed = -1200
 const Bounce = -750
 const GPBounce = -1200
 
-@onready var animation = $Sprite2D/AnimationPlayer
+@onready var _Walk = $WalkingAnim/AnimationPlayer
 
 var PlayerPosition = position.x
 
 const MaxHP = 3
 var CurrentHP = 300
 var JumpState = false
-const MaxWalkSpeed = 250
-const MaxRunSpeed = 600
+const MaxWalkSpeed = 500
+const MaxRunSpeed = 800
 var Accel = 100
 const WalkAccel = 100
 
@@ -64,7 +67,6 @@ NOTE:
 func _physics_process(delta):
 	
 	PlayerPosition = position.x
-
 	Midair = !is_on_floor()
 	
 #JUMPING CODE
@@ -107,7 +109,7 @@ func _physics_process(delta):
 		JumpState = true
 	if (JumpState):
 		if (!Input.is_key_pressed(KEY_Z) && velocity.y < 0):
-			velocity.y = velocity.y/10
+			velocity.y = velocity.y/2
 
 #LEFT AND RIGHT ACCELLERATION CODE
 	if (Input.is_key_pressed(KEY_SHIFT)):
@@ -135,8 +137,11 @@ func _physics_process(delta):
 		
 		#Accelerate to the right unless moving left OR midair. Speed limited to MaxWalkSpeed
 		if (Input.is_action_pressed("ui_right")):
+			_Walk.play("Walk")
 			if ((velocity.x < MaxWalkSpeed && velocity.x >= 0) or (Midair && velocity.x < MaxWalkSpeed)):
 				velocity.x += Accel
+		else:
+			_Walk.stop()
 
 #LEFT AND RIGHT DECELLERATION CODE
 

@@ -1,11 +1,12 @@
-[gd_scene load_steps=22 format=3 uid="uid://b7ba3g73jo8y2"]
+[gd_scene load_steps=23 format=3 uid="uid://b7ba3g73jo8y2"]
 
 [ext_resource type="Texture2D" uid="uid://vod05aw7217s" path="res://Textures/Tileset (2).png" id="1_srdt6"]
 [ext_resource type="Script" path="res://Player/CharacterBodyMovement2D.gd" id="2_5ndbo"]
 [ext_resource type="Texture2D" uid="uid://bubvyh6myossl" path="res://Textures/icon.svg" id="2_bfvet"]
 [ext_resource type="Texture2D" uid="uid://dgkgsgqj3b3fy" path="res://Player/Animations/HorridSpriteSheet.png" id="3_2bnj7"]
 [ext_resource type="Script" path="res://Enemy Template/EnemyMovement.gd" id="3_50qc6"]
-[ext_resource type="Script" path="res://Enemy Template/Enemy hitbox.gd" id="5_huoak"]
+[ext_resource type="Texture2D" uid="uid://c6m6qqilv1f2a" path="res://Player/Animations/CrabWalk.png" id="4_s8245"]
+[ext_resource type="Script" path="res://Enemy Template/BasicEnemyHitbox.gd" id="5_huoak"]
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_2lug6"]
 
@@ -61,51 +62,6 @@ physics_layer_0/collision_layer = 1
 sources/0 = SubResource("TileSetAtlasSource_i7ey5")
 sources/1 = SubResource("TileSetAtlasSource_6nwfv")
 
-[sub_resource type="Animation" id="Animation_ynmyr"]
-resource_name = "GroundPound"
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(1),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [11]
-}
-
-[sub_resource type="Animation" id="Animation_ahcsw"]
-resource_name = "Idle"
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0.1),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [0]
-}
-
-[sub_resource type="Animation" id="Animation_c60yk"]
-resource_name = "Jump"
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [10]
-}
-
 [sub_resource type="Animation" id="Animation_4k8pb"]
 resource_name = "Punch"
 tracks/0/type = "value"
@@ -130,10 +86,10 @@ tracks/0/path = NodePath(".:frame")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
+"times": PackedFloat32Array(),
+"transitions": PackedFloat32Array(),
 "update": 1,
-"values": [0]
+"values": []
 }
 
 [sub_resource type="Animation" id="Animation_lqr5b"]
@@ -154,16 +110,51 @@ tracks/0/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_4mflg"]
 _data = {
-"GroundPound": SubResource("Animation_ynmyr"),
-"Idle": SubResource("Animation_ahcsw"),
-"Jump": SubResource("Animation_c60yk"),
 "Punch": SubResource("Animation_4k8pb"),
 "RESET": SubResource("Animation_7nt7p"),
 "Walk": SubResource("Animation_lqr5b")
 }
 
+[sub_resource type="Animation" id="Animation_7mdlk"]
+resource_name = "Walk"
+length = 0.3
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [0, 1, 2]
+}
+
+[sub_resource type="Animation" id="Animation_ildgw"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [1]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_ue5b4"]
+_data = {
+"RESET": SubResource("Animation_ildgw"),
+"Walk": SubResource("Animation_7mdlk")
+}
+
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_6fwq0"]
-size = Vector2(80.2669, 122.692)
+size = Vector2(92.0523, 108.197)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_weufc"]
 size = Vector2(38.1709, 31.3573)
@@ -213,21 +204,34 @@ script = ExtResource("2_5ndbo")
 position = Vector2(-1, -41)
 zoom = Vector2(0.5, 0.5)
 
-[node name="Sprite2D" type="Sprite2D" parent="CRAB/Controller"]
+[node name="DebugSprites" type="Sprite2D" parent="CRAB/Controller"]
+visible = false
 position = Vector2(-2, -1.00002)
 scale = Vector2(1.96962, 1.96962)
 texture = ExtResource("3_2bnj7")
 hframes = 4
 vframes = 3
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="CRAB/Controller/Sprite2D"]
+[node name="AnimationPlayer" type="AnimationPlayer" parent="CRAB/Controller/DebugSprites"]
 libraries = {
 "": SubResource("AnimationLibrary_4mflg")
 }
 
+[node name="WalkingAnim" type="Sprite2D" parent="CRAB/Controller"]
+position = Vector2(-28, 28)
+scale = Vector2(1.38463, 1.38463)
+texture = ExtResource("4_s8245")
+hframes = 5
+vframes = 5
+frame = 1
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="CRAB/Controller/WalkingAnim"]
+libraries = {
+"": SubResource("AnimationLibrary_ue5b4")
+}
+
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CRAB/Controller"]
-visible = false
-position = Vector2(-2, 22)
+position = Vector2(-35.5, 42.5)
 scale = Vector2(3.13952, 1.93167)
 shape = SubResource("RectangleShape2D_6fwq0")
 

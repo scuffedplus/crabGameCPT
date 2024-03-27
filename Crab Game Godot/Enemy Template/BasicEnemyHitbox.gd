@@ -1,5 +1,8 @@
 extends Area2D
-var Health = 300
+var Health = 3
+
+#Code for an enemy that has 3 health
+
 
 const Damage = 1
 
