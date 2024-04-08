@@ -1,10 +1,12 @@
-[gd_scene load_steps=12 format=3 uid="uid://b7ba3g73jo8y2"]
+[gd_scene load_steps=23 format=3 uid="uid://b7ba3g73jo8y2"]
 
-[ext_resource type="Texture2D" uid="uid://vod05aw7217s" path="res://Textures/Tileset (2).png" id="1_srdt6"]
-[ext_resource type="PackedScene" uid="uid://dygwmiu5agidw" path="res://Player/crab.tscn" id="2_1akfi"]
-[ext_resource type="Texture2D" uid="uid://bubvyh6myossl" path="res://Textures/icon.svg" id="2_bfvet"]
-[ext_resource type="Script" path="res://Enemy Template/EnemyMovement.gd" id="3_50qc6"]
-[ext_resource type="Script" path="res://Enemy Template/BasicEnemyHitbox.gd" id="5_huoak"]
+[ext_resource type="Texture2D" uid="uid://vod05aw7217s" path="res://Textures/Tileset (2).png" id="1_shuj8"]
+[ext_resource type="Script" path="res://Player/CharacterBodyMovement2D.gd" id="2_q2jhq"]
+[ext_resource type="Texture2D" uid="uid://dgkgsgqj3b3fy" path="res://Player/Animations/HorridSpriteSheet.png" id="3_cyjou"]
+[ext_resource type="Texture2D" uid="uid://bubvyh6myossl" path="res://Textures/icon.svg" id="3_yusi1"]
+[ext_resource type="Texture2D" uid="uid://c6m6qqilv1f2a" path="res://Player/Animations/CrabWalk.png" id="4_5upi1"]
+[ext_resource type="Script" path="res://Enemy Template/EnemyMovement.gd" id="4_fe3db"]
+[ext_resource type="Script" path="res://Enemy Template/BasicEnemyHitbox.gd" id="5_ulb6b"]
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_2lug6"]
 
@@ -12,7 +14,7 @@
 texture = SubResource("CompressedTexture2D_2lug6")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_6nwfv"]
-texture = ExtResource("1_srdt6")
+texture = ExtResource("1_shuj8")
 texture_region_size = Vector2i(192, 192)
 4:4/0 = 0
 4:4/0/physics_layer_0/linear_velocity = Vector2(0, 0)
@@ -60,11 +62,108 @@ physics_layer_0/collision_layer = 1
 sources/0 = SubResource("TileSetAtlasSource_i7ey5")
 sources/1 = SubResource("TileSetAtlasSource_6nwfv")
 
+[sub_resource type="Animation" id="Animation_4k8pb"]
+resource_name = "Punch"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5, 6, 7, 0]
+}
+
+[sub_resource type="Animation" id="Animation_7nt7p"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(),
+"transitions": PackedFloat32Array(),
+"update": 1,
+"values": []
+}
+
+[sub_resource type="Animation" id="Animation_lqr5b"]
+resource_name = "Walk"
+length = 0.25
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [8, 9]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_4mflg"]
+_data = {
+"Punch": SubResource("Animation_4k8pb"),
+"RESET": SubResource("Animation_7nt7p"),
+"Walk": SubResource("Animation_lqr5b")
+}
+
+[sub_resource type="Animation" id="Animation_ildgw"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [1]
+}
+
+[sub_resource type="Animation" id="Animation_7mdlk"]
+resource_name = "Walk"
+length = 0.3
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [0, 1, 2]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_ue5b4"]
+_data = {
+"RESET": SubResource("Animation_ildgw"),
+"Walk": SubResource("Animation_7mdlk")
+}
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6fwq0"]
+size = Vector2(92.0523, 108.197)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_weufc"]
+size = Vector2(38.1709, 31.3573)
+
 [sub_resource type="SpriteFrames" id="SpriteFrames_gsr0c"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("2_bfvet")
+"texture": ExtResource("3_yusi1")
 }],
 "loop": true,
 "name": &"default",
@@ -95,7 +194,72 @@ scale = Vector2(8.86413, 1)
 build_mode = 1
 polygon = PackedVector2Array(-2, -376, 573, -381, 573, 1, -2, -1)
 
-[node name="CRAB" parent="." instance=ExtResource("2_1akfi")]
+[node name="CRAB" type="Node2D" parent="."]
+
+[node name="Controller" type="CharacterBody2D" parent="CRAB"]
+position = Vector2(227, -541)
+script = ExtResource("2_q2jhq")
+
+[node name="Camera2D" type="Camera2D" parent="CRAB/Controller"]
+position = Vector2(-1, -41)
+zoom = Vector2(0.5, 0.5)
+
+[node name="DebugSprites" type="Sprite2D" parent="CRAB/Controller"]
+visible = false
+position = Vector2(-2, -1.00002)
+scale = Vector2(1.96962, 1.96962)
+texture = ExtResource("3_cyjou")
+hframes = 4
+vframes = 3
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="CRAB/Controller/DebugSprites"]
+libraries = {
+"": SubResource("AnimationLibrary_4mflg")
+}
+
+[node name="WalkingAnim" type="Sprite2D" parent="CRAB/Controller"]
+position = Vector2(-28, 28)
+scale = Vector2(1.38463, 1.38463)
+texture = ExtResource("4_5upi1")
+hframes = 5
+vframes = 5
+frame = 1
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="CRAB/Controller/WalkingAnim"]
+libraries = {
+"": SubResource("AnimationLibrary_ue5b4")
+}
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CRAB/Controller"]
+position = Vector2(-35.5, 42.5)
+scale = Vector2(3.13952, 1.93167)
+shape = SubResource("RectangleShape2D_6fwq0")
+
+[node name="EnemyDetection" type="Area2D" parent="CRAB/Controller"]
+position = Vector2(-5, 25)
+collision_layer = 0
+collision_mask = 2
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CRAB/Controller/EnemyDetection"]
+visible = false
+position = Vector2(3, -18)
+rotation = -3.14159
+scale = Vector2(6.65429, -6.56945)
+shape = SubResource("RectangleShape2D_weufc")
+
+[node name="CollectibleDetection" type="Area2D" parent="CRAB/Controller"]
+position = Vector2(-10, 50)
+collision_layer = 4
+collision_mask = 4
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CRAB/Controller/CollectibleDetection"]
+visible = false
+position = Vector2(3, -18)
+rotation = -3.14159
+scale = Vector2(6.65429, -6.56945)
+shape = SubResource("RectangleShape2D_weufc")
 
 [node name="Enemies" type="Node2D" parent="."]
 
@@ -103,13 +267,13 @@ polygon = PackedVector2Array(-2, -376, 573, -381, 573, 1, -2, -1)
 position = Vector2(653, -444)
 sprite_frames = SubResource("SpriteFrames_gsr0c")
 frame_progress = 0.948606
-script = ExtResource("3_50qc6")
+script = ExtResource("4_fe3db")
 
 [node name="Enemy hitbox" type="Area2D" parent="Enemies/1" groups=["Enemies"]]
 collision_layer = 2
 collision_mask = 2
 monitoring = false
-script = ExtResource("5_huoak")
+script = ExtResource("5_ulb6b")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Enemies/1/Enemy hitbox"]
 light_mask = 2
@@ -127,7 +291,7 @@ position = Vector2(1016, -714)
 collision_layer = 2
 collision_mask = 2
 monitoring = false
-script = ExtResource("5_huoak")
+script = ExtResource("5_ulb6b")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Enemies/BouncePads/Node2D/Enemy hitbox"]
 light_mask = 2
@@ -137,14 +301,14 @@ scale = Vector2(0.720561, 0.720561)
 shape = SubResource("CapsuleShape2D_kakx3")
 
 [node name="Sprite2D" type="Sprite2D" parent="Enemies/BouncePads/Node2D/Enemy hitbox"]
-texture = ExtResource("2_bfvet")
+texture = ExtResource("3_yusi1")
 
 [node name="Enemy hitbox2" type="Area2D" parent="Enemies/BouncePads/Node2D" groups=["Enemies"]]
 position = Vector2(-759, -1228)
 collision_layer = 2
 collision_mask = 2
 monitoring = false
-script = ExtResource("5_huoak")
+script = ExtResource("5_ulb6b")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Enemies/BouncePads/Node2D/Enemy hitbox2"]
 light_mask = 2
@@ -154,14 +318,14 @@ scale = Vector2(0.720561, 0.720561)
 shape = SubResource("CapsuleShape2D_kakx3")
 
 [node name="Sprite2D" type="Sprite2D" parent="Enemies/BouncePads/Node2D/Enemy hitbox2"]
-texture = ExtResource("2_bfvet")
+texture = ExtResource("3_yusi1")
 
 [node name="Enemy hitbox3" type="Area2D" parent="Enemies/BouncePads/Node2D" groups=["Enemies"]]
 position = Vector2(-473, -1003)
 collision_layer = 2
 collision_mask = 2
 monitoring = false
-script = ExtResource("5_huoak")
+script = ExtResource("5_ulb6b")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Enemies/BouncePads/Node2D/Enemy hitbox3"]
 light_mask = 2
@@ -171,14 +335,14 @@ scale = Vector2(0.720561, 0.720561)
 shape = SubResource("CapsuleShape2D_kakx3")
 
 [node name="Sprite2D" type="Sprite2D" parent="Enemies/BouncePads/Node2D/Enemy hitbox3"]
-texture = ExtResource("2_bfvet")
+texture = ExtResource("3_yusi1")
 
 [node name="Enemy hitbox4" type="Area2D" parent="Enemies/BouncePads/Node2D" groups=["Enemies"]]
 position = Vector2(23, -1114)
 collision_layer = 2
 collision_mask = 2
 monitoring = false
-script = ExtResource("5_huoak")
+script = ExtResource("5_ulb6b")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Enemies/BouncePads/Node2D/Enemy hitbox4"]
 light_mask = 2
@@ -188,14 +352,14 @@ scale = Vector2(0.720561, 0.720561)
 shape = SubResource("CapsuleShape2D_kakx3")
 
 [node name="Sprite2D" type="Sprite2D" parent="Enemies/BouncePads/Node2D/Enemy hitbox4"]
-texture = ExtResource("2_bfvet")
+texture = ExtResource("3_yusi1")
 
 [node name="Enemy hitbox5" type="Area2D" parent="Enemies/BouncePads/Node2D" groups=["Enemies"]]
 position = Vector2(442, -884)
 collision_layer = 2
 collision_mask = 2
 monitoring = false
-script = ExtResource("5_huoak")
+script = ExtResource("5_ulb6b")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Enemies/BouncePads/Node2D/Enemy hitbox5"]
 light_mask = 2
@@ -205,7 +369,7 @@ scale = Vector2(0.720561, 0.720561)
 shape = SubResource("CapsuleShape2D_kakx3")
 
 [node name="Sprite2D" type="Sprite2D" parent="Enemies/BouncePads/Node2D/Enemy hitbox5"]
-texture = ExtResource("2_bfvet")
+texture = ExtResource("3_yusi1")
 
 [node name="Enemy hitbox6" type="Area2D" parent="Enemies/BouncePads/Node2D" groups=["Enemies"]]
 position = Vector2(-203, -1537)
@@ -213,7 +377,7 @@ scale = Vector2(4.75647, 0.943091)
 collision_layer = 2
 collision_mask = 2
 monitoring = false
-script = ExtResource("5_huoak")
+script = ExtResource("5_ulb6b")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Enemies/BouncePads/Node2D/Enemy hitbox6"]
 light_mask = 2
@@ -223,7 +387,7 @@ scale = Vector2(0.720561, 0.720561)
 shape = SubResource("CapsuleShape2D_kakx3")
 
 [node name="Sprite2D" type="Sprite2D" parent="Enemies/BouncePads/Node2D/Enemy hitbox6"]
-texture = ExtResource("2_bfvet")
+texture = ExtResource("3_yusi1")
 
 [node name="Label" type="Label" parent="Enemies/BouncePads"]
 offset_left = -263.0
@@ -234,6 +398,7 @@ text = "You WIN!!!!!!!"
 
 [node name="CRNABFOWBDFHOABW" type="Node2D" parent="."]
 
+[connection signal="area_entered" from="CRAB/Controller/EnemyDetection" to="CRAB/Controller" method="_on_enemy_detection_area_entered"]
 [connection signal="tree_exited" from="Enemies/1/Enemy hitbox" to="Enemies/1" method="_on_enemy_hitbox_tree_exited"]
 [connection signal="tree_exited" from="Enemies/BouncePads/Node2D/Enemy hitbox" to="Enemies/1" method="_on_enemy_hitbox_tree_exited"]
 [connection signal="tree_exited" from="Enemies/BouncePads/Node2D/Enemy hitbox2" to="Enemies/1" method="_on_enemy_hitbox_tree_exited"]

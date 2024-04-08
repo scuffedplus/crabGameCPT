@@ -12,6 +12,15 @@ const GPBounce = -1200
 
 @onready var _Walk = $WalkingAnim/AnimationPlayer
 
+var Inventory = [0, 0, 0, 0, 0]
+
+"""
+0 = Coins
+1 = Gold Keys
+2 = Red Keys
+3 = Blue Keys
+"""
+
 var PlayerPosition = position.x
 
 const MaxHP = 3
@@ -238,3 +247,12 @@ func Knockback(Enemy):
 		velocity.x = -700
 	if (EnemyPosition < PlayerPosition):
 		velocity.x = 700
+
+func _on_collectible_detection_area_entered(area):
+	var CollectibleInfo = area.GetInfo()
+	print(CollectibleInfo)
+	print(Inventory[CollectibleInfo[0]])
+	Inventory[CollectibleInfo[0]] += 1
+	print(Inventory[CollectibleInfo[0]])
+	if (CollectibleInfo[2]):
+		area.Die()
