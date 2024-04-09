@@ -12,6 +12,7 @@ const GPBounce = -1200
 
 @onready var _Walk = $WalkingAnim/AnimationPlayer
 
+
 var Inventory = [0, 0, 0, 0, 0]
 
 """
@@ -30,7 +31,7 @@ const MaxWalkSpeed = 500
 const MaxRunSpeed = 800
 var Accel = 100
 const WalkAccel = 100
-
+var floorDir = get_floor_normal
 var Decel = 3
 const MinDecel = 3
 # The amount the deceleration exponentially increases by.
@@ -78,6 +79,8 @@ func _physics_process(delta):
 	PlayerPosition = position.x
 	Midair = !is_on_floor()
 	
+		
+
 #JUMPING CODE
 	var HoldingMove = Input.is_action_pressed("ui_right") && Input.is_action_pressed("ui_left")
 	
@@ -123,11 +126,17 @@ func _physics_process(delta):
 #LEFT AND RIGHT ACCELLERATION CODE
 	if (Input.is_key_pressed(KEY_SHIFT)):
 		if (Input.is_action_pressed("ui_left")):
+			$WalkingAnim.flip_h = true
+
+			_Walk.play("Walk")
 			if ((velocity.x > -MaxRunSpeed && velocity.x <= 0) or (Midair && velocity.x > -MaxRunSpeed)):
 				velocity.x -= Accel
 				FacingRight = false
 	
 		if (Input.is_action_pressed("ui_right")):
+			$WalkingAnim.flip_h = false
+
+			_Walk.play("Walk")
 			if ((velocity.x < MaxRunSpeed && velocity.x >= 0) or (Midair && velocity.x < MaxRunSpeed)):
 				velocity.x += Accel
 				FacingRight = true
@@ -141,16 +150,26 @@ func _physics_process(delta):
 		
 		#Accelerate to the left unless moving right OR midair. Speed limited to MaxWalkSpeed
 		if (Input.is_action_pressed("ui_left")):
+			$WalkingAnim.flip_h = true
+
+			_Walk.play("Walk")
+			
 			if ((velocity.x > -MaxWalkSpeed && velocity.x <= 0) or (Midair && velocity.x > -MaxWalkSpeed)):
 				velocity.x -= Accel
 		
 		#Accelerate to the right unless moving left OR midair. Speed limited to MaxWalkSpeed
 		if (Input.is_action_pressed("ui_right")):
+			$WalkingAnim.flip_h = false
+
 			_Walk.play("Walk")
+			
 			if ((velocity.x < MaxWalkSpeed && velocity.x >= 0) or (Midair && velocity.x < MaxWalkSpeed)):
 				velocity.x += Accel
-		else:
+
+			
+		if !(Input.is_action_pressed("ui_right")) and !(Input.is_action_pressed("ui_left")):
 			_Walk.stop()
+
 
 #LEFT AND RIGHT DECELLERATION CODE
 
@@ -178,6 +197,18 @@ func _physics_process(delta):
 					Decel = Decel * DecelMultiplier
 	
 	move_and_slide()
+	
+	if is_on_floor():
+		var rotat = 0
+		rotat = (get_floor_angle())
+		if !FacingRight:
+			$WalkingAnim.rotation = rotat
+		if FacingRight:
+			$WalkingAnim.rotation = -rotat
+	else:
+		$WalkingAnim.rotation = $WalkingAnim.rotation - $WalkingAnim.rotation*0.10
+	
+
 
 func GroundPound():
 	Poundability = false
@@ -247,6 +278,7 @@ func Knockback(Enemy):
 		velocity.x = -700
 	if (EnemyPosition < PlayerPosition):
 		velocity.x = 700
+		
 
 func _on_collectible_detection_area_entered(area):
 	var CollectibleInfo = area.GetInfo()

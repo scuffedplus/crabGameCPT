@@ -164,7 +164,7 @@ libraries = {
 }
 
 [node name="WalkingAnim" type="Sprite2D" parent="CRAB/Controller"]
-position = Vector2(-28, 29)
+position = Vector2(-28, 28)
 scale = Vector2(1.38463, 1.38463)
 texture = ExtResource("5_nf00s")
 hframes = 5
