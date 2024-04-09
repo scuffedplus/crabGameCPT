@@ -151,7 +151,7 @@ func _physics_process(delta):
 		#Accelerate to the left unless moving right OR midair. Speed limited to MaxWalkSpeed
 		if (Input.is_action_pressed("ui_left")):
 			$WalkingAnim.flip_h = true
-
+			FacingRight = false
 			_Walk.play("Walk")
 			
 			if ((velocity.x > -MaxWalkSpeed && velocity.x <= 0) or (Midair && velocity.x > -MaxWalkSpeed)):
@@ -159,8 +159,8 @@ func _physics_process(delta):
 		
 		#Accelerate to the right unless moving left OR midair. Speed limited to MaxWalkSpeed
 		if (Input.is_action_pressed("ui_right")):
-			$WalkingAnim.flip_h = false
-
+			$WalkingAnim.flip_h = true
+			FacingRight = false
 			_Walk.play("Walk")
 			
 			if ((velocity.x < MaxWalkSpeed && velocity.x >= 0) or (Midair && velocity.x < MaxWalkSpeed)):
