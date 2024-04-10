@@ -1,5 +1,10 @@
 extends CharacterBody2D
 
+
+
+
+
+
 var Punching = false
 var Falling = false
 
@@ -127,21 +132,20 @@ func _physics_process(delta):
 	if (Input.is_key_pressed(KEY_SHIFT)):
 		if (Input.is_action_pressed("ui_left")):
 			$WalkingAnim.flip_h = true
-
 			_Walk.play("Walk")
 			if ((velocity.x > -MaxRunSpeed && velocity.x <= 0) or (Midair && velocity.x > -MaxRunSpeed)):
+
 				velocity.x -= Accel
 				FacingRight = false
-	
 		if (Input.is_action_pressed("ui_right")):
 			$WalkingAnim.flip_h = false
-
 			_Walk.play("Walk")
 			if ((velocity.x < MaxRunSpeed && velocity.x >= 0) or (Midair && velocity.x < MaxRunSpeed)):
+
 				velocity.x += Accel
+				
 				FacingRight = true
 	else:
-		
 		if (abs(velocity.x) > MaxWalkSpeed):
 			if (velocity.x > 0):
 				velocity.x -= Decel
@@ -149,24 +153,25 @@ func _physics_process(delta):
 				velocity.x += Decel
 		
 		#Accelerate to the left unless moving right OR midair. Speed limited to MaxWalkSpeed
+		
 		if (Input.is_action_pressed("ui_left")):
 			$WalkingAnim.flip_h = true
 			FacingRight = false
 			_Walk.play("Walk")
-			
 			if ((velocity.x > -MaxWalkSpeed && velocity.x <= 0) or (Midair && velocity.x > -MaxWalkSpeed)):
 				velocity.x -= Accel
-		
+				
+
+				
 		#Accelerate to the right unless moving left OR midair. Speed limited to MaxWalkSpeed
 		if (Input.is_action_pressed("ui_right")):
-			$WalkingAnim.flip_h = true
+			$WalkingAnim.flip_h = false
 			FacingRight = false
 			_Walk.play("Walk")
-			
 			if ((velocity.x < MaxWalkSpeed && velocity.x >= 0) or (Midair && velocity.x < MaxWalkSpeed)):
 				velocity.x += Accel
 
-			
+				
 		if !(Input.is_action_pressed("ui_right")) and !(Input.is_action_pressed("ui_left")):
 			_Walk.stop()
 
@@ -197,19 +202,55 @@ func _physics_process(delta):
 					Decel = Decel * DecelMultiplier
 	
 	move_and_slide()
-	
+	floor_max_angle = 0.9
+	floor_constant_speed = true
+	floor_snap_length = 10.0
+	apply_floor_snap()
+
+	var testA = Vector2(1, 1)
+	var rotate=(get_floor_angle())
+	var PoRotate=(get_floor_normal())
+	var OpRotate = -PoRotate
+	var game = OpRotate.dot(testA)
+
+
 	if is_on_floor():
-		var rotat = 0
-		rotat = (get_floor_angle())
-		if !FacingRight:
-			$WalkingAnim.rotation = rotat
-		if FacingRight:
-			$WalkingAnim.rotation = -rotat
+		if game < 1.1:
+			$WalkingAnim.rotation = rotate
+		if game > 0.9:
+			$WalkingAnim.rotation = -rotate
 	else:
 		$WalkingAnim.rotation = $WalkingAnim.rotation - $WalkingAnim.rotation*0.10
+		
+
+
+func MovingRight():
+	return(FacingRight)
+
+
+
+		
+"""
+COMBAT, ITEMS, ENEMIES
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+"""
+		
+func _on_collectible_detection_area_entered(area):
+	var CollectibleInfo = area.GetInfo()
+	print(CollectibleInfo)
+	print(Inventory[CollectibleInfo[0]])
+	Inventory[CollectibleInfo[0]] += 1
+	print(Inventory[CollectibleInfo[0]])
+	if (CollectibleInfo[2]):
+		area.Die()
+		
+		
+		
+func punch():
+	#if you guys want to code this we need an animation first
+	#easiest way I found is to make a hitbox appear from frame x to frame y
+	pass
 	
-
-
 func GroundPound():
 	Poundability = false
 	velocity.y = 0
@@ -243,11 +284,7 @@ func _on_enemy_detection_area_entered(area):
 		if (area.is_in_group("Enemies")):
 			area.TakeDamage(3)
 		Boing()
-
-func punch():
-	#if you guys want to code this we need an animation first
-	#easiest way I found is to make a hitbox appear from frame x to frame y
-	pass
+	
 
 #Called when bouncing on an enemy
 #Checks whether the player was groundpounding
@@ -260,11 +297,7 @@ func Boing():
 	else:
 		velocity.y = -velocity.y
 
-#Returns true if the player is attempting to move to the right (X+)
-func MovingRight():
-	return(FacingRight)
-
-#IGNORE THE BROKEN CODE
+	
 func Knockback(Enemy):
 	Invicible = true
 	print("Invincible!")
@@ -278,13 +311,3 @@ func Knockback(Enemy):
 		velocity.x = -700
 	if (EnemyPosition < PlayerPosition):
 		velocity.x = 700
-		
-
-func _on_collectible_detection_area_entered(area):
-	var CollectibleInfo = area.GetInfo()
-	print(CollectibleInfo)
-	print(Inventory[CollectibleInfo[0]])
-	Inventory[CollectibleInfo[0]] += 1
-	print(Inventory[CollectibleInfo[0]])
-	if (CollectibleInfo[2]):
-		area.Die()
