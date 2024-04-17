@@ -15,7 +15,7 @@ const GPSpeed = -1200
 const Bounce = -750
 const GPBounce = -1200
 
-@onready var _Walk = $WalkingAnim/AnimationPlayer
+@onready var _Walk = $Animations/AnimationPlayer
 
 
 var Inventory = [0, 0, 0, 0, 0]
@@ -32,8 +32,8 @@ var PlayerPosition = position.x
 const MaxHP = 3
 var CurrentHP = 300
 var JumpState = false
-const MaxWalkSpeed = 500
-const MaxRunSpeed = 800
+const MaxWalkSpeed = 700
+const MaxRunSpeed = 1200
 var Accel = 100
 const WalkAccel = 100
 var floorDir = get_floor_normal
@@ -46,7 +46,7 @@ var MaxDecel = 25
 const MidAirMaxDecel = 8
 const OnGroundMaxDecel = 25
 
-const JUMP_VELOCITY = -1000.0
+const JUMP_VELOCITY = -1200.0
 
 # Get the gravity from the project settings to be synced with RigidBody nodes.
 var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")*2
@@ -116,9 +116,7 @@ func _physics_process(delta):
 			if (Midair && Poundability && !Stunned):
 				GroundPound()
 		else:
-			if (Input.is_action_pressed("ui_up")):
-				punch()
-				
+			punch()
 
 #JUMPING LOGIC
 	if (Input.is_key_pressed(KEY_Z) and is_on_floor()):
@@ -131,15 +129,15 @@ func _physics_process(delta):
 #LEFT AND RIGHT ACCELLERATION CODE
 	if (Input.is_key_pressed(KEY_SHIFT)):
 		if (Input.is_action_pressed("ui_left")):
-			$WalkingAnim.flip_h = true
-			_Walk.play("Walk")
+			$Animations.flip_h = true
+			_Walk.play("Run")
 			if ((velocity.x > -MaxRunSpeed && velocity.x <= 0) or (Midair && velocity.x > -MaxRunSpeed)):
 
 				velocity.x -= Accel
 				FacingRight = false
 		if (Input.is_action_pressed("ui_right")):
-			$WalkingAnim.flip_h = false
-			_Walk.play("Walk")
+			$Animations.flip_h = false
+			_Walk.play("Run")
 			if ((velocity.x < MaxRunSpeed && velocity.x >= 0) or (Midair && velocity.x < MaxRunSpeed)):
 
 				velocity.x += Accel
@@ -155,7 +153,7 @@ func _physics_process(delta):
 		#Accelerate to the left unless moving right OR midair. Speed limited to MaxWalkSpeed
 		
 		if (Input.is_action_pressed("ui_left")):
-			$WalkingAnim.flip_h = true
+			$Animations.flip_h = true
 			FacingRight = false
 			_Walk.play("Walk")
 			if ((velocity.x > -MaxWalkSpeed && velocity.x <= 0) or (Midair && velocity.x > -MaxWalkSpeed)):
@@ -165,15 +163,17 @@ func _physics_process(delta):
 				
 		#Accelerate to the right unless moving left OR midair. Speed limited to MaxWalkSpeed
 		if (Input.is_action_pressed("ui_right")):
-			$WalkingAnim.flip_h = false
+			$Animations.flip_h = false
 			FacingRight = false
 			_Walk.play("Walk")
 			if ((velocity.x < MaxWalkSpeed && velocity.x >= 0) or (Midair && velocity.x < MaxWalkSpeed)):
 				velocity.x += Accel
 
 				
-		if !(Input.is_action_pressed("ui_right")) and !(Input.is_action_pressed("ui_left")):
-			_Walk.stop()
+	if !(Input.is_action_pressed("ui_right")) and !(Input.is_action_pressed("ui_left")):
+		if ((_Walk.current_animation == "Walk") or (_Walk.current_animation == "Run")):
+			_Walk.play("Idle") 
+		
 
 
 #LEFT AND RIGHT DECELLERATION CODE
@@ -216,11 +216,11 @@ func _physics_process(delta):
 
 	if is_on_floor():
 		if game < 1.1:
-			$WalkingAnim.rotation = rotate
+			$Animations.rotation = rotate
 		if game > 0.9:
-			$WalkingAnim.rotation = -rotate
+			$Animations.rotation = -rotate
 	else:
-		$WalkingAnim.rotation = $WalkingAnim.rotation - $WalkingAnim.rotation*0.10
+		$Animations.rotation = $Animations.rotation - $Animations.rotation*0.10
 		
 
 
@@ -247,9 +247,7 @@ func _on_collectible_detection_area_entered(area):
 		
 		
 func punch():
-	#if you guys want to code this we need an animation first
-	#easiest way I found is to make a hitbox appear from frame x to frame y
-	pass
+	_Walk.play("Punch")
 	
 func GroundPound():
 	Poundability = false
@@ -311,3 +309,13 @@ func Knockback(Enemy):
 		velocity.x = -700
 	if (EnemyPosition < PlayerPosition):
 		velocity.x = 700
+
+
+func _on_animation_player_animation_finished(anim_name):
+	if (anim_name == "Punch"):
+		_Walk.play("Idle")
+
+
+func _on_punch_hitbox_area_entered(area):
+	if (area.is_in_group("Enemies")):
+			area.TakeDamage(3)

@@ -1,10 +1,9 @@
-[gd_scene load_steps=21 format=3 uid="uid://b52osxa8ckpay"]
+[gd_scene load_steps=20 format=3 uid="uid://b52osxa8ckpay"]
 
 [ext_resource type="Texture2D" uid="uid://vod05aw7217s" path="res://Textures/Tileset (2).png" id="1_h2lrw"]
 [ext_resource type="TileSet" uid="uid://dbng0ugigpcxi" path="res://Textures/Level.tres" id="2_4jwty"]
 [ext_resource type="Script" path="res://Player/CharacterBodyMovement2D.gd" id="3_r6uip"]
-[ext_resource type="Texture2D" uid="uid://dgkgsgqj3b3fy" path="res://Player/Animations/HorridSpriteSheet.png" id="4_dt8kd"]
-[ext_resource type="Texture2D" uid="uid://c6m6qqilv1f2a" path="res://Player/Animations/CrabWalk.png" id="5_nf00s"]
+[ext_resource type="Texture2D" uid="uid://wvhdg3p3srke" path="res://Player/Animations/CrabSpritesheet.png" id="4_0cskw"]
 [ext_resource type="Script" path="res://Collectibles/Collectible.gd" id="6_l5n1i"]
 [ext_resource type="Animation" uid="uid://by5sju2s3f78b" path="res://Player/Walk.res" id="6_symp2"]
 [ext_resource type="Texture2D" uid="uid://c57wnk0x308mh" path="res://Textures/Collectibles/CoinPlaceholder.png" id="7_jd6wk"]
@@ -28,59 +27,6 @@ texture_region_size = Vector2i(192, 192)
 tile_size = Vector2i(192, 192)
 sources/0 = SubResource("TileSetAtlasSource_6adhy")
 
-[sub_resource type="Animation" id="Animation_4k8pb"]
-resource_name = "Punch"
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1),
-"update": 1,
-"values": [0, 1, 2, 3, 4, 5, 6, 7, 0]
-}
-
-[sub_resource type="Animation" id="Animation_7nt7p"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(),
-"transitions": PackedFloat32Array(),
-"update": 1,
-"values": []
-}
-
-[sub_resource type="Animation" id="Animation_lqr5b"]
-resource_name = "Walk"
-length = 0.25
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.1),
-"transitions": PackedFloat32Array(1, 1),
-"update": 1,
-"values": [8, 9]
-}
-
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_4mflg"]
-_data = {
-"Punch": SubResource("Animation_4k8pb"),
-"RESET": SubResource("Animation_7nt7p"),
-"Walk": SubResource("Animation_lqr5b")
-}
-
 [sub_resource type="Animation" id="Animation_ildgw"]
 length = 0.001
 tracks/0/type = "value"
@@ -96,11 +42,80 @@ tracks/0/keys = {
 "values": [2, 2, 2]
 }
 
+[sub_resource type="Animation" id="Animation_7qhrk"]
+resource_name = "Run"
+length = 0.16
+loop_mode = 1
+step = 0.08
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.08),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [3, 4]
+}
+
+[sub_resource type="Animation" id="Animation_8pkqo"]
+resource_name = "Punch"
+length = 0.5
+step = 0.05
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.3, 0.4, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 1,
+"values": [5, 6, 7, 8, 9]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = false
+tracks/1/path = NodePath("PunchHitbox:monitoring")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.2, 0.45),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, true]
+}
+
+[sub_resource type="Animation" id="Animation_1m0w8"]
+resource_name = "Idle"
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_ue5b4"]
 _data = {
+"Idle": SubResource("Animation_1m0w8"),
+"Punch": SubResource("Animation_8pkqo"),
 "RESET": SubResource("Animation_ildgw"),
+"Run": SubResource("Animation_7qhrk"),
 "Walk": ExtResource("6_symp2")
 }
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_u8qii"]
+size = Vector2(115.554, 141.554)
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_m8gs3"]
 radius = 10.8
@@ -150,32 +165,25 @@ script = ExtResource("3_r6uip")
 position = Vector2(-1, -41)
 zoom = Vector2(0.5, 0.5)
 
-[node name="DebugSprites" type="Sprite2D" parent="CRAB/Controller"]
-visible = false
-position = Vector2(-2, -1.00002)
-scale = Vector2(1.96962, 1.96962)
-texture = ExtResource("4_dt8kd")
-hframes = 4
-vframes = 3
-frame = 4
-
-[node name="AnimationPlayer" type="AnimationPlayer" parent="CRAB/Controller/DebugSprites"]
-libraries = {
-"": SubResource("AnimationLibrary_4mflg")
-}
-
-[node name="WalkingAnim" type="Sprite2D" parent="CRAB/Controller"]
+[node name="Animations" type="Sprite2D" parent="CRAB/Controller"]
 position = Vector2(-28, 29)
 scale = Vector2(1.38463, 1.38463)
-texture = ExtResource("5_nf00s")
+texture = ExtResource("4_0cskw")
 hframes = 5
 vframes = 5
 frame = 2
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="CRAB/Controller/WalkingAnim"]
+[node name="AnimationPlayer" type="AnimationPlayer" parent="CRAB/Controller/Animations"]
 libraries = {
 "": SubResource("AnimationLibrary_ue5b4")
 }
+
+[node name="PunchHitbox" type="Area2D" parent="CRAB/Controller/Animations"]
+monitoring = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CRAB/Controller/Animations/PunchHitbox"]
+position = Vector2(132.887, 15.1665)
+shape = SubResource("RectangleShape2D_u8qii")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CRAB/Controller"]
 position = Vector2(-29, 42)
@@ -262,5 +270,7 @@ position = Vector2(680, -260)
 scale = Vector2(4.92, 4.92)
 shape = SubResource("CircleShape2D_v61sc")
 
+[connection signal="animation_finished" from="CRAB/Controller/Animations/AnimationPlayer" to="CRAB/Controller" method="_on_animation_player_animation_finished"]
+[connection signal="area_entered" from="CRAB/Controller/Animations/PunchHitbox" to="CRAB/Controller" method="_on_punch_hitbox_area_entered"]
 [connection signal="area_entered" from="CRAB/Controller/EnemyDetection" to="CRAB/Controller" method="_on_enemy_detection_area_entered"]
 [connection signal="area_entered" from="CRAB/Controller/CollectibleDetection" to="CRAB/Controller" method="_on_collectible_detection_area_entered"]
