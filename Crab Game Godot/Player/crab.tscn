@@ -57,7 +57,6 @@ _data = {
 }
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_3o8uc"]
-load_path = "res://.godot/imported/CrabWalk.png-7ed772eb164569f41d203ff22d32c76b.ctex"
 
 [sub_resource type="Animation" id="Animation_ildgw"]
 length = 0.001
