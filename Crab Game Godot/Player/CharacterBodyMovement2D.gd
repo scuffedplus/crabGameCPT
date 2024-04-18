@@ -2,9 +2,6 @@ extends CharacterBody2D
 
 
 
-
-
-
 var Punching = false
 var Falling = false
 
@@ -15,7 +12,7 @@ const GPSpeed = -1200
 const Bounce = -750
 const GPBounce = -1200
 
-@onready var _Walk = $WalkingAnim/AnimationPlayer
+@onready var _Walk = $Animations/AnimationPlayer
 
 
 var Inventory = [0, 0, 0, 0, 0]
@@ -53,23 +50,20 @@ var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")*2
 
 #Different States for the player are below:
 var Poundability = true
-
-#NOTE:
 #Currently, IF it is NOT POSSIBLE TO GROUNDPOUND
 #IT IS ASSUMED that the player is MID-GROUNDPOUND
-
-
-#If stunned (can't move left and right)
 var Stunned = false
+#If stunned (can't move left and right)
 var StunDelay = false
-
-#NOTE:
 #Stunned is set to false if touching the ground
 #StunDelay is there because getting knocked back sets Stunned to true and knocks the player back
 #BUT if the player is on the floor, Stunned is immediately set back to false
 #StunDelay is used to delay the inversion of Stunned by one frame if enabled
 #This will probably break something down the line but we'll cross that bridge when we get to it.
-
+var FullStun = false
+#Like stun, but doesn't reset when touching the ground.
+var Ylocked = false
+#locks the players y position
 #If invicible
 var Invicible = false
 
@@ -90,9 +84,12 @@ func _physics_process(delta):
 	var HoldingMove = Input.is_action_pressed("ui_right") && Input.is_action_pressed("ui_left")
 	
 	if (Midair):
-		MaxDecel = MidAirMaxDecel
-		if (Poundability):
-			velocity.y += gravity * delta
+		if (Ylocked):
+			velocity.y = 0
+		else:
+			MaxDecel = MidAirMaxDecel
+			if (Poundability):
+				velocity.y += gravity * delta
 	else:
 		JumpState = false
 		MaxDecel = OnGroundMaxDecel
@@ -116,9 +113,7 @@ func _physics_process(delta):
 			if (Midair && Poundability && !Stunned):
 				GroundPound()
 		else:
-			if (Input.is_action_pressed("ui_up")):
-				punch()
-				
+			punch()
 
 #JUMPING LOGIC
 	if (Input.is_key_pressed(KEY_Z) and is_on_floor()):
@@ -129,51 +124,53 @@ func _physics_process(delta):
 			velocity.y = velocity.y/2
 
 #LEFT AND RIGHT ACCELLERATION CODE
-	if (Input.is_key_pressed(KEY_SHIFT)):
-		if (Input.is_action_pressed("ui_left")):
-			$WalkingAnim.flip_h = true
-			_Walk.play("Walk")
-			if ((velocity.x > -MaxRunSpeed && velocity.x <= 0) or (Midair && velocity.x > -MaxRunSpeed)):
-
-				velocity.x -= Accel
+	if (FullStun == false):
+		if (Input.is_key_pressed(KEY_SHIFT)):
+			if (Input.is_action_pressed("ui_left")):
+				$Animations.flip_h = true
+				_Walk.play("Run")
+				if ((velocity.x > -MaxRunSpeed && velocity.x <= 0) or (Midair && velocity.x > -MaxRunSpeed)):
+					velocity.x -= Accel
+					FacingRight = false
+					
+			if (Input.is_action_pressed("ui_right")):
+				$Animations.flip_h = false
+				_Walk.play("Run")
+				if ((velocity.x < MaxRunSpeed && velocity.x >= 0) or (Midair && velocity.x < MaxRunSpeed)):
+	
+					velocity.x += Accel
+					
+					FacingRight = true
+		else:
+			if (abs(velocity.x) > MaxWalkSpeed):
+				if (velocity.x > 0):
+					velocity.x -= Decel
+				else:
+					velocity.x += Decel
+			
+			#Accelerate to the left unless moving right OR midair. Speed limited to MaxWalkSpeed
+			
+			if (Input.is_action_pressed("ui_left")):
+				$Animations.flip_h = true
 				FacingRight = false
-		if (Input.is_action_pressed("ui_right")):
-			$WalkingAnim.flip_h = false
-			_Walk.play("Walk")
-			if ((velocity.x < MaxRunSpeed && velocity.x >= 0) or (Midair && velocity.x < MaxRunSpeed)):
-
-				velocity.x += Accel
-				
-				FacingRight = true
-	else:
-		if (abs(velocity.x) > MaxWalkSpeed):
-			if (velocity.x > 0):
-				velocity.x -= Decel
-			else:
-				velocity.x += Decel
-		
-		#Accelerate to the left unless moving right OR midair. Speed limited to MaxWalkSpeed
-		
-		if (Input.is_action_pressed("ui_left")):
-			$WalkingAnim.flip_h = true
-			FacingRight = false
-			_Walk.play("Walk")
-			if ((velocity.x > -MaxWalkSpeed && velocity.x <= 0) or (Midair && velocity.x > -MaxWalkSpeed)):
-				velocity.x -= Accel
-				
-
+				_Walk.play("Walk")
+				if ((velocity.x > -MaxWalkSpeed && velocity.x <= 0) or (Midair && velocity.x > -MaxWalkSpeed)):
+					velocity.x -= Accel
+					
 				
 		#Accelerate to the right unless moving left OR midair. Speed limited to MaxWalkSpeed
-		if (Input.is_action_pressed("ui_right")):
-			$WalkingAnim.flip_h = false
-			FacingRight = false
-			_Walk.play("Walk")
-			if ((velocity.x < MaxWalkSpeed && velocity.x >= 0) or (Midair && velocity.x < MaxWalkSpeed)):
-				velocity.x += Accel
+			if (Input.is_action_pressed("ui_right")):
+				$Animations.flip_h = false
+				FacingRight = false
+				_Walk.play("Walk")
+				if ((velocity.x < MaxWalkSpeed && velocity.x >= 0) or (Midair && velocity.x < MaxWalkSpeed)):
+					velocity.x += Accel	
 
 				
-		if !(Input.is_action_pressed("ui_right")) and !(Input.is_action_pressed("ui_left")):
-			_Walk.stop()
+	if !(Input.is_action_pressed("ui_right")) and !(Input.is_action_pressed("ui_left")):
+		if ((_Walk.current_animation == "Walk") or (_Walk.current_animation == "Run")):
+			_Walk.play("Idle") 
+		
 
 
 #LEFT AND RIGHT DECELLERATION CODE
@@ -216,11 +213,11 @@ func _physics_process(delta):
 
 	if is_on_floor():
 		if game < 1.1:
-			$WalkingAnim.rotation = rotate
+			$Animations.rotation = rotate
 		if game > 0.9:
-			$WalkingAnim.rotation = -rotate
+			$Animations.rotation = -rotate
 	else:
-		$WalkingAnim.rotation = $WalkingAnim.rotation - $WalkingAnim.rotation*0.10
+		$Animations.rotation = $Animations.rotation - $Animations.rotation*0.10
 		
 
 
@@ -247,9 +244,15 @@ func _on_collectible_detection_area_entered(area):
 		
 		
 func punch():
-	#if you guys want to code this we need an animation first
-	#easiest way I found is to make a hitbox appear from frame x to frame y
-	pass
+	if (Input.is_action_pressed("ui_right")):
+		$Animations.flip_h = false
+	if (Input.is_action_pressed("ui_left")):
+		$Animations.flip_h = true
+	_Walk.play("Punch")
+	velocity.x = velocity.x/10
+	FullStun = true
+	Ylocked = true
+	
 	
 func GroundPound():
 	Poundability = false
@@ -311,3 +314,15 @@ func Knockback(Enemy):
 		velocity.x = -700
 	if (EnemyPosition < PlayerPosition):
 		velocity.x = 700
+
+
+func _on_animation_player_animation_finished(anim_name):
+	if (anim_name == "Punch"):
+		FullStun = false
+		Ylocked = false
+		_Walk.play("Idle")
+
+
+func _on_punch_hitbox_area_entered(area):
+	if (area.is_in_group("Enemies")):
+			area.TakeDamage(3)

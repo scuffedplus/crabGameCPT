@@ -2,7 +2,6 @@
 
 [ext_resource type="Script" path="res://Player/CharacterBodyMovement2D.gd" id="1_yijfh"]
 [ext_resource type="Texture2D" uid="uid://dgkgsgqj3b3fy" path="res://Player/Animations/HorridSpriteSheet.png" id="2_t1dy0"]
-[ext_resource type="Texture2D" uid="uid://c6m6qqilv1f2a" path="res://Player/Animations/CrabWalk.png" id="3_2apkh"]
 
 [sub_resource type="Animation" id="Animation_4k8pb"]
 resource_name = "Punch"
@@ -56,6 +55,8 @@ _data = {
 "RESET": SubResource("Animation_7nt7p"),
 "Walk": SubResource("Animation_lqr5b")
 }
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_3o8uc"]
 
 [sub_resource type="Animation" id="Animation_ildgw"]
 length = 0.001
@@ -127,7 +128,7 @@ libraries = {
 [node name="WalkingAnim" type="Sprite2D" parent="Controller"]
 position = Vector2(-28, 28)
 scale = Vector2(1.38463, 1.38463)
-texture = ExtResource("3_2apkh")
+texture = SubResource("CompressedTexture2D_3o8uc")
 hframes = 5
 vframes = 5
 frame = 1
