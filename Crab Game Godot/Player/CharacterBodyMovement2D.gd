@@ -32,8 +32,8 @@ var PlayerPosition = position.x
 const MaxHP = 3
 var CurrentHP = 300
 var JumpState = false
-const MaxWalkSpeed = 500
-const MaxRunSpeed = 800
+const MaxWalkSpeed = 700
+const MaxRunSpeed = 1200
 var Accel = 100
 const WalkAccel = 100
 var floorDir = get_floor_normal
@@ -46,7 +46,7 @@ var MaxDecel = 25
 const MidAirMaxDecel = 8
 const OnGroundMaxDecel = 25
 
-const JUMP_VELOCITY = -1000.0
+const JUMP_VELOCITY = -1200.0
 
 # Get the gravity from the project settings to be synced with RigidBody nodes.
 var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")*2
@@ -204,7 +204,7 @@ func _physics_process(delta):
 	move_and_slide()
 	floor_max_angle = 0.9
 	floor_constant_speed = true
-	floor_snap_length = 10.0
+	floor_snap_length = 15.0
 	apply_floor_snap()
 
 	var testA = Vector2(1, 1)
