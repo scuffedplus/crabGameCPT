@@ -9,19 +9,26 @@ var Midair
 var FacingRight
 const GPSpeed = -1200
 
+
+var Comboing = false
+#If Currently in a combo
+var ComboHit = 0
+#Which hit of the combo
+
 const Bounce = -750
 const GPBounce = -1200
 
 @onready var _Walk = $Animations/AnimationPlayer
+@onready var PunchCoolDown = $PunchCoolDown
 
-
-var Inventory = [0, 0, 0, 0, 0]
+var Inventory = [0, 0, 0, 0, 0, 0]
 
 """
 0 = Coins
 1 = Gold Keys
 2 = Red Keys
 3 = Blue Keys
+4 = Gold Coins
 """
 
 var PlayerPosition = position.x
@@ -78,8 +85,6 @@ func _physics_process(delta):
 	PlayerPosition = position.x
 	Midair = !is_on_floor()
 	
-		
-
 #JUMPING CODE
 	var HoldingMove = Input.is_action_pressed("ui_right") && Input.is_action_pressed("ui_left")
 	
@@ -113,7 +118,8 @@ func _physics_process(delta):
 			if (Midair && Poundability && !Stunned):
 				GroundPound()
 		else:
-			punch()
+			if (PunchCoolDown.is_stopped() && !Punching):
+				punch()
 
 #JUMPING LOGIC
 	if (Input.is_key_pressed(KEY_Z) and is_on_floor()):
@@ -224,9 +230,6 @@ func _physics_process(delta):
 func MovingRight():
 	return(FacingRight)
 
-
-
-		
 """
 COMBAT, ITEMS, ENEMIES
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -234,26 +237,21 @@ COMBAT, ITEMS, ENEMIES
 		
 func _on_collectible_detection_area_entered(area):
 	var CollectibleInfo = area.GetInfo()
+	
 	print(CollectibleInfo)
 	print(Inventory[CollectibleInfo[0]])
+	
 	Inventory[CollectibleInfo[0]] += 1
+	
 	print(Inventory[CollectibleInfo[0]])
+	
 	if (CollectibleInfo[2]):
 		area.Die()
 		
-		
-		
-func punch():
-	if (Input.is_action_pressed("ui_right")):
-		$Animations.flip_h = false
-	if (Input.is_action_pressed("ui_left")):
-		$Animations.flip_h = true
-	_Walk.play("Punch")
-	velocity.x = velocity.x/10
-	FullStun = true
-	Ylocked = true
-	
-	
+	for n in CollectibleInfo[1]:
+		Inventory[CollectibleInfo[0]] += 1
+		print(Inventory[CollectibleInfo[0]])
+
 func GroundPound():
 	Poundability = false
 	velocity.y = 0
@@ -317,12 +315,41 @@ func Knockback(Enemy):
 
 
 func _on_animation_player_animation_finished(anim_name):
-	if (anim_name == "Punch"):
-		FullStun = false
-		Ylocked = false
-		_Walk.play("Idle")
+	Punching = false
+	print("Punching False")
 
+func PunchReset():
+	print("Punch reset")
+	FullStun = false
+	Ylocked = false
+	_Walk.play("Idle")
+	$PunchCoolDown.start()
+	ComboHit = 0
+	
 
 func _on_punch_hitbox_area_entered(area):
 	if (area.is_in_group("Enemies")):
 			area.TakeDamage(3)
+
+
+func _on_timer_timeout():
+	Comboing = false
+	Punching = false
+	PunchReset()
+
+func punch():
+	print("Punched")
+	if (Input.is_action_pressed("ui_right")):
+		$Animations.flip_h = false
+	if (Input.is_action_pressed("ui_left")):
+		$Animations.flip_h = true
+	_Walk.play("Punch")
+	velocity.x = velocity.x/10
+	FullStun = true
+	Ylocked = true
+	ComboHit += 1
+	Comboing = true
+	Punching = true
+	$ComboTimer.start()
+	if (ComboHit == 3):
+		PunchReset()

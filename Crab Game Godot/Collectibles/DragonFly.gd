@@ -6,6 +6,7 @@ var CollectibleID = 0
 1 = Gold Key
 2 = Red Key
 3 = Blue Key
+4 = Gold Coin
 """
 
 var SecondaryID = 0
