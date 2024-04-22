@@ -23,3 +23,4 @@ PlayerVariables="*res://player_variables.gd"
 
 2d_physics/layer_2="HurtsThePlayer"
 2d_physics/layer_3="Collectibles"
+2d_physics/layer_4="Goal"
