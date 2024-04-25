@@ -1,0 +1,23 @@
+[gd_scene load_steps=4 format=3 uid="uid://cafy430qmrd4e"]
+
+[ext_resource type="Script" path="res://Collectibles/Scripts/DragonFly.gd" id="1_72p7p"]
+[ext_resource type="Texture2D" uid="uid://c57wnk0x308mh" path="res://Collectibles/Textures/CoinPlaceholder.png" id="2_1481j"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_v61sc"]
+
+[node name="Collectible" type="Area2D"]
+position = Vector2(-585, 198)
+collision_layer = 4
+collision_mask = 4
+monitoring = false
+script = ExtResource("1_72p7p")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(1592, -260)
+scale = Vector2(0.192114, 0.192114)
+texture = ExtResource("2_1481j")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(1592, -260)
+scale = Vector2(4.92, 4.92)
+shape = SubResource("CircleShape2D_v61sc")

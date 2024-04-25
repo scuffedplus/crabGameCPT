@@ -1,9 +1,9 @@
-[gd_resource type="TileSet" load_steps=3 format=3 uid="uid://dbng0ugigpcxi"]
+[gd_resource type="TileSet" load_steps=3 format=3 uid="uid://nemjn0igi54l"]
 
-[ext_resource type="Texture2D" uid="uid://sxltgavk3jra" path="res://Textures/DirtTileset.png" id="1_xvqw3"]
+[ext_resource type="Texture2D" uid="uid://sxltgavk3jra" path="res://Environment/DirtTileset.png" id="1_etplr"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1jk08"]
-texture = ExtResource("1_xvqw3")
+texture = ExtResource("1_etplr")
 texture_region_size = Vector2i(192, 192)
 2:0/0 = 0
 2:0/0/physics_layer_0/linear_velocity = Vector2(0, 0)

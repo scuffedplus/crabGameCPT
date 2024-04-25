@@ -1,0 +1,42 @@
+[gd_scene load_steps=6 format=3 uid="uid://bov3cqfn22dd2"]
+
+[ext_resource type="Texture2D" uid="uid://bubvyh6myossl" path="res://Enemies/Sprites/icon.svg" id="1_fqnkk"]
+[ext_resource type="Script" path="res://Enemies/Scripts/TESTEnemyMovement.gd" id="2_habxa"]
+[ext_resource type="Script" path="res://Enemies/Scripts/BasicEnemyHitbox.gd" id="3_80j0p"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_gsr0c"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_fqnkk")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_kakx3"]
+radius = 92.0
+height = 184.0
+
+[node name="1" type="AnimatedSprite2D" groups=["Enemies"]]
+position = Vector2(653, -444)
+sprite_frames = SubResource("SpriteFrames_gsr0c")
+frame_progress = 0.948606
+script = ExtResource("2_habxa")
+
+[node name="Enemy hitbox" type="Area2D" parent="." groups=["Enemies"]]
+disable_mode = 2
+collision_layer = 2
+collision_mask = 2
+monitoring = false
+script = ExtResource("3_80j0p")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Enemy hitbox"]
+light_mask = 2
+visibility_layer = 2
+position = Vector2(-1, 1)
+scale = Vector2(0.720561, 0.720561)
+shape = SubResource("CapsuleShape2D_kakx3")
+
+[connection signal="tree_exited" from="Enemy hitbox" to="." method="_on_enemy_hitbox_tree_exited"]

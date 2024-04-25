@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://wvhdg3p3srke"
-path="res://.godot/imported/CrabSpritesheet.png-df17aefdc1dce80f0516d4d16905b47c.ctex"
+uid="uid://vod05aw7217s"
+path="res://.godot/imported/Tileset (2).png-d8274785972e5d71b7d249bca013ea32.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Player/Animations/CrabSpritesheet.png"
-dest_files=["res://.godot/imported/CrabSpritesheet.png-df17aefdc1dce80f0516d4d16905b47c.ctex"]
+source_file="res://Environment/Tileset (2).png"
+dest_files=["res://.godot/imported/Tileset (2).png-d8274785972e5d71b7d249bca013ea32.ctex"]
 
 [params]
 

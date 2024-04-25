@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c57wnk0x308mh"
-path="res://.godot/imported/CoinPlaceholder.png-557cded395616ef494ea2e9c6a4ce6ef.ctex"
+uid="uid://sxltgavk3jra"
+path="res://.godot/imported/DirtTileset.png-43c9d392ee71806863332c98765519c5.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Textures/Collectibles/CoinPlaceholder.png"
-dest_files=["res://.godot/imported/CoinPlaceholder.png-557cded395616ef494ea2e9c6a4ce6ef.ctex"]
+source_file="res://Environment/DirtTileset.png"
+dest_files=["res://.godot/imported/DirtTileset.png-43c9d392ee71806863332c98765519c5.ctex"]
 
 [params]
 

@@ -13,7 +13,7 @@ config_version=5
 config/name="Crab Game"
 run/main_scene="res://Scenes/Level.tscn"
 config/features=PackedStringArray("4.2", "Forward Plus")
-config/icon="res://Textures/icon.svg"
+config/icon="res://Enemies/Sprites/icon.svg"
 
 [autoload]
 
@@ -21,6 +21,7 @@ PlayerVariables="*res://player_variables.gd"
 
 [layer_names]
 
+2d_physics/layer_1="Ground"
 2d_physics/layer_2="HurtsThePlayer"
 2d_physics/layer_3="Collectibles"
 2d_physics/layer_4="Goal"
