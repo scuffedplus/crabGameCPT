@@ -24,3 +24,7 @@ PlayerVariables="*res://player_variables.gd"
 2d_physics/layer_1="Ground"
 2d_physics/layer_2="HurtsThePlayer"
 2d_physics/layer_3="Collectibles"
+
+[rendering]
+
+environment/defaults/default_clear_color=Color(0.254902, 0.690196, 0.901961, 1)

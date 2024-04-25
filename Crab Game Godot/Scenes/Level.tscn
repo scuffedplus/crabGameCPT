@@ -40,7 +40,6 @@ position = Vector2(156, 35)
 motion_scale = Vector2(0.3, 0.05)
 
 [node name="TileMap" type="TileMap" parent="ParallaxBackground/ParallaxLayer"]
-visible = false
 position = Vector2(-4305, -232)
 scale = Vector2(2.035, 2.035)
 tile_set = SubResource("TileSet_p061v")
@@ -84,3 +83,12 @@ position = Vector2(5610, 344)
 
 [node name="Coconut(Goal)" parent="." instance=ExtResource("9_owbc3")]
 position = Vector2(7479, 22)
+
+[node name="EnemyCrab8" parent="." instance=ExtResource("9_ufhes")]
+position = Vector2(6773, 20)
+
+[node name="EnemyCrab9" parent="." instance=ExtResource("9_ufhes")]
+position = Vector2(6768, -100)
+
+[node name="EnemyCrab10" parent="." instance=ExtResource("9_ufhes")]
+position = Vector2(6758, -234)

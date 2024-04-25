@@ -7,6 +7,9 @@ var Fallspeed = 0
 const Speed = 230
 var CurrentDir
 
+var LeftFooting
+var RightFooting
+
 var MaxFallSpeed = 400
 
 var Alive = true
@@ -43,9 +46,18 @@ func Move():
 	#Ledge Detection
 	if ($LedgeDetection/LeftSight.is_colliding() == false):
 		CurrentDir = Speed
+		#LeftFooting = true
 	if ($LedgeDetection/RightSight.is_colliding() == false):
 		CurrentDir = -Speed
-	
+		#RightFooting = true
+	"""
+	if (RightFooting & !LeftFooting):
+		CurrentDir = Speed
+	elif (LeftFooting & !RightFooting):
+		CurrentDir = -Speed
+	elif (!LeftFooting & !RightFooting):
+		CurrentDir = 0
+	"""
 	#Wall Detection
 	if ($WallDetection/LeftWall.is_colliding()):
 		CurrentDir = Speed
