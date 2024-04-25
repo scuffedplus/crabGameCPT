@@ -34,13 +34,17 @@ func Gravity():
 	velocity.y = Fallspeed
 
 func Move():
+	#Ledge Detection
 	if ($LedgeDetection/LeftSight.is_colliding() == false):
 		CurrentDir = Speed
-		print("Turning Right")
 	if ($LedgeDetection/RightSight.is_colliding() == false):
 		CurrentDir = -Speed
-		print("Turning Left")
 	
+	#Wall Detection
+	if ($WallDetection/LeftWall.is_colliding()):
+		CurrentDir = Speed
+	if ($WallDetection/RightWall.is_colliding()):
+		CurrentDir = -Speed
 	velocity.x = CurrentDir
 
 func Animate():

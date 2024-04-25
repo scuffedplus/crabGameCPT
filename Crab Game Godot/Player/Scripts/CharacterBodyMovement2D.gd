@@ -327,6 +327,7 @@ func PunchReset():
 	_Walk.play("Idle")
 	$PunchCoolDown.start()
 	ComboHit = 0
+	$PunchHitbox.scale.x = 1
 	
 
 func _on_punch_hitbox_area_entered(area):
