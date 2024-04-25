@@ -7,6 +7,7 @@ Collectible ID Guide:
 2 = Red Key
 3 = Blue Key
 4 = Gold Coin
+5 = Coconut
 """
 
 var CollectibleID = 0

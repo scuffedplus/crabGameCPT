@@ -5,7 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://cmpjrowlqpwdd" path="res://Enemies/Sprites/BasicEnemySprite.png" id="2_j2bid"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_0yke4"]
-size = Vector2(29.4375, 15.875)
+size = Vector2(29.4375, 14.1875)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_dm2av"]
 size = Vector2(47.9785, 28.8961)
@@ -71,7 +71,7 @@ _data = {
 script = ExtResource("1_6ivqf")
 
 [node name="Physics" type="CollisionShape2D" parent="Movement"]
-position = Vector2(0.625002, 28)
+position = Vector2(0.625002, 24.625)
 scale = Vector2(4, 4)
 shape = SubResource("RectangleShape2D_0yke4")
 one_way_collision = true
@@ -93,16 +93,26 @@ scale = Vector2(4, 4)
 [node name="LeftSight" type="RayCast2D" parent="Movement/LedgeDetection"]
 position = Vector2(-20, 16)
 exclude_parent = false
-target_position = Vector2(0, 10)
+target_position = Vector2(0, 30)
 hit_from_inside = true
 collide_with_areas = true
 
 [node name="RightSight" type="RayCast2D" parent="Movement/LedgeDetection"]
 position = Vector2(20, 16)
 exclude_parent = false
-target_position = Vector2(0, 10)
+target_position = Vector2(0, 30)
 hit_from_inside = true
 collide_with_areas = true
+
+[node name="WallDetection" type="Node2D" parent="Movement"]
+
+[node name="LeftWall" type="RayCast2D" parent="Movement/WallDetection"]
+position = Vector2(-85, 4)
+target_position = Vector2(-10, 0)
+
+[node name="RightWall" type="RayCast2D" parent="Movement/WallDetection"]
+position = Vector2(80, 4)
+target_position = Vector2(10, 0)
 
 [node name="Sprite2D" type="Sprite2D" parent="Movement"]
 position = Vector2(-0.750005, -6.25)
@@ -115,23 +125,6 @@ vframes = 5
 libraries = {
 "": SubResource("AnimationLibrary_s4myu")
 }
-
-[node name="Timer" type="Timer" parent="Movement"]
-one_shot = true
-
-[node name="WallDetection" type="Node2D" parent="Movement"]
-
-[node name="LeftWall" type="RayCast2D" parent="Movement/WallDetection"]
-position = Vector2(-100, 4)
-target_position = Vector2(-10, 0)
-hit_from_inside = true
-collide_with_areas = true
-
-[node name="RightWall" type="RayCast2D" parent="Movement/WallDetection"]
-position = Vector2(100, 4)
-target_position = Vector2(10, 0)
-hit_from_inside = true
-collide_with_areas = true
 
 [connection signal="tree_exiting" from="Movement/Hurtbox" to="Movement" method="_on_hurtbox_tree_exiting"]
 [connection signal="animation_finished" from="Movement/Sprite2D/AnimationPlayer" to="Movement" method="_on_animation_player_animation_finished"]

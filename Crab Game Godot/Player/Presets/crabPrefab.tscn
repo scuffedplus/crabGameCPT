@@ -1,8 +1,23 @@
-[gd_scene load_steps=13 format=3 uid="uid://clbsms5osi5bt"]
+[gd_scene load_steps=15 format=3 uid="uid://clbsms5osi5bt"]
 
 [ext_resource type="Script" path="res://Player/Scripts/CharacterBodyMovement2D.gd" id="1_t8ewm"]
 [ext_resource type="Texture2D" uid="uid://c6o6be2hrxyyd" path="res://Player/Animations/Crab Animations.png" id="2_23vde"]
 [ext_resource type="Animation" uid="uid://by5sju2s3f78b" path="res://Player/Walk.res" id="3_gr2u5"]
+
+[sub_resource type="Animation" id="Animation_kpcpu"]
+resource_name = "Fall"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.1),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [15]
+}
 
 [sub_resource type="Animation" id="Animation_1m0w8"]
 resource_name = "Idle"
@@ -20,6 +35,21 @@ tracks/0/keys = {
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 1,
 "values": [10, 11, 12, 11]
+}
+
+[sub_resource type="Animation" id="Animation_f7dag"]
+resource_name = "Jump"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [14]
 }
 
 [sub_resource type="Animation" id="Animation_8pkqo"]
@@ -86,7 +116,9 @@ tracks/0/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_ue5b4"]
 _data = {
+"Fall": SubResource("Animation_kpcpu"),
 "Idle": SubResource("Animation_1m0w8"),
+"Jump": SubResource("Animation_f7dag"),
 "Punch": SubResource("Animation_8pkqo"),
 "RESET": SubResource("Animation_ildgw"),
 "Run": SubResource("Animation_7qhrk"),
@@ -98,7 +130,7 @@ radius = 10.8
 height = 27.8
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_jgayj"]
-size = Vector2(38.1709, 31.3573)
+size = Vector2(43.1301, 35.9239)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5t70p"]
 size = Vector2(38.1709, 31.3573)
@@ -110,7 +142,7 @@ size = Vector2(169.54, 141.554)
 position = Vector2(170, -659)
 
 [node name="Controller" type="CharacterBody2D" parent="."]
-position = Vector2(34, 37)
+position = Vector2(34, 41)
 script = ExtResource("1_t8ewm")
 
 [node name="Camera2D" type="Camera2D" parent="Controller"]
@@ -143,8 +175,7 @@ collision_mask = 2
 monitorable = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Controller/EnemyDetection"]
-visible = false
-position = Vector2(3, -18)
+position = Vector2(-29.4998, 24.0001)
 rotation = -3.14159
 scale = Vector2(6.65429, -6.56945)
 shape = SubResource("RectangleShape2D_jgayj")
@@ -167,6 +198,9 @@ shape = SubResource("RectangleShape2D_5t70p")
 one_shot = true
 
 [node name="PunchCoolDown" type="Timer" parent="Controller"]
+one_shot = true
+
+[node name="UpperCutCoolDown" type="Timer" parent="Controller"]
 one_shot = true
 
 [node name="PunchHitbox" type="Area2D" parent="Controller"]
