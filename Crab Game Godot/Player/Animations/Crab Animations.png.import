@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://sxltgavk3jra"
-path="res://.godot/imported/DirtTileset.png-f1ccfece99211ec4df0ed34ec9c48148.ctex"
+uid="uid://c6o6be2hrxyyd"
+path="res://.godot/imported/Crab Animations.png-4dc15dc7fa7e700b7bd5c2d2e6903a62.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Textures/DirtTileset.png"
-dest_files=["res://.godot/imported/DirtTileset.png-f1ccfece99211ec4df0ed34ec9c48148.ctex"]
+source_file="res://Player/Animations/Crab Animations.png"
+dest_files=["res://.godot/imported/Crab Animations.png-4dc15dc7fa7e700b7bd5c2d2e6903a62.ctex"]
 
 [params]
 

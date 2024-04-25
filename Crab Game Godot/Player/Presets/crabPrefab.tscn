@@ -1,0 +1,189 @@
+[gd_scene load_steps=13 format=3 uid="uid://clbsms5osi5bt"]
+
+[ext_resource type="Script" path="res://Player/Scripts/CharacterBodyMovement2D.gd" id="1_t8ewm"]
+[ext_resource type="Texture2D" uid="uid://c6o6be2hrxyyd" path="res://Player/Animations/Crab Animations.png" id="2_23vde"]
+[ext_resource type="Animation" uid="uid://by5sju2s3f78b" path="res://Player/Walk.res" id="3_gr2u5"]
+
+[sub_resource type="Animation" id="Animation_1m0w8"]
+resource_name = "Idle"
+length = 2.0
+loop_mode = 1
+step = 0.05
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5, 0.7, 1.7),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [10, 11, 12, 11]
+}
+
+[sub_resource type="Animation" id="Animation_8pkqo"]
+resource_name = "Punch"
+length = 0.55
+step = 0.05
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.3, 0.45, 0.55),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 1,
+"values": [5, 6, 7, 8, 13]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("../PunchHitbox/CollisionShape2D:disabled")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.1, 0.55),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [false, true]
+}
+
+[sub_resource type="Animation" id="Animation_ildgw"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.0001, 0.1),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [2, 2, 2]
+}
+
+[sub_resource type="Animation" id="Animation_7qhrk"]
+resource_name = "Run"
+length = 0.16
+loop_mode = 1
+step = 0.08
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.08),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [3, 4]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_ue5b4"]
+_data = {
+"Idle": SubResource("Animation_1m0w8"),
+"Punch": SubResource("Animation_8pkqo"),
+"RESET": SubResource("Animation_ildgw"),
+"Run": SubResource("Animation_7qhrk"),
+"Walk": ExtResource("3_gr2u5")
+}
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_j7bah"]
+radius = 10.8
+height = 27.8
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_jgayj"]
+size = Vector2(38.1709, 31.3573)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_5t70p"]
+size = Vector2(38.1709, 31.3573)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_fu5n1"]
+size = Vector2(169.54, 141.554)
+
+[node name="CRAB" type="Node2D"]
+position = Vector2(170, -659)
+
+[node name="Controller" type="CharacterBody2D" parent="."]
+position = Vector2(34, 37)
+script = ExtResource("1_t8ewm")
+
+[node name="Camera2D" type="Camera2D" parent="Controller"]
+position = Vector2(-1, -41)
+zoom = Vector2(0.5, 0.5)
+
+[node name="Animations" type="Sprite2D" parent="Controller"]
+position = Vector2(-28, 29)
+scale = Vector2(1.38463, 1.38463)
+texture = ExtResource("2_23vde")
+hframes = 5
+vframes = 5
+frame = 2
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Controller/Animations"]
+libraries = {
+"": SubResource("AnimationLibrary_ue5b4")
+}
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Controller"]
+position = Vector2(-29, 42)
+rotation = 1.5708
+scale = Vector2(10, 10)
+shape = SubResource("CapsuleShape2D_j7bah")
+
+[node name="EnemyDetection" type="Area2D" parent="Controller"]
+position = Vector2(-5, 25)
+collision_layer = 0
+collision_mask = 2
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Controller/EnemyDetection"]
+visible = false
+position = Vector2(3, -18)
+rotation = -3.14159
+scale = Vector2(6.65429, -6.56945)
+shape = SubResource("RectangleShape2D_jgayj")
+
+[node name="CollectibleDetection" type="Area2D" parent="Controller"]
+position = Vector2(-108, 162)
+scale = Vector2(1.35577, 1.71657)
+collision_layer = 4
+collision_mask = 4
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Controller/CollectibleDetection"]
+visible = false
+position = Vector2(53.1063, -78.0626)
+rotation = -3.14159
+scale = Vector2(6.61584, 4.87611)
+shape = SubResource("RectangleShape2D_5t70p")
+
+[node name="ComboTimer" type="Timer" parent="Controller"]
+one_shot = true
+
+[node name="PunchCoolDown" type="Timer" parent="Controller"]
+one_shot = true
+
+[node name="PunchHitbox" type="Area2D" parent="Controller"]
+position = Vector2(-28, 29)
+scale = Vector2(1.38463, 1.38463)
+disable_mode = 2
+collision_layer = 2
+collision_mask = 2
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Controller/PunchHitbox"]
+position = Vector2(155.276, 15.1665)
+shape = SubResource("RectangleShape2D_fu5n1")
+disabled = true
+
+[connection signal="animation_finished" from="Controller/Animations/AnimationPlayer" to="Controller" method="_on_animation_player_animation_finished"]
+[connection signal="area_entered" from="Controller/EnemyDetection" to="Controller" method="_on_enemy_detection_area_entered"]
+[connection signal="area_entered" from="Controller/CollectibleDetection" to="Controller" method="_on_collectible_detection_area_entered"]
+[connection signal="timeout" from="Controller/ComboTimer" to="Controller" method="_on_timer_timeout"]
+[connection signal="area_entered" from="Controller/PunchHitbox" to="Controller" method="_on_punch_hitbox_area_entered"]

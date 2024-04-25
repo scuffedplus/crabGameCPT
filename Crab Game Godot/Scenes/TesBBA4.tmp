@@ -1,10 +1,10 @@
-[gd_scene load_steps=11 format=3 uid="uid://b7ba3g73jo8y2"]
+[gd_scene load_steps=12 format=3 uid="uid://b7ba3g73jo8y2"]
 
-[ext_resource type="Texture2D" uid="uid://vod05aw7217s" path="res://Environment/Tileset (2).png" id="1_shuj8"]
-[ext_resource type="PackedScene" uid="uid://bov3cqfn22dd2" path="res://Enemies/Presets/TestEnemyPreset.tscn" id="2_2u8ft"]
-[ext_resource type="Texture2D" uid="uid://bubvyh6myossl" path="res://Enemies/Sprites/icon.svg" id="3_yusi1"]
-[ext_resource type="PackedScene" uid="uid://clbsms5osi5bt" path="res://Player/Presets/crabPrefab.tscn" id="5_cbwh1"]
-[ext_resource type="Script" path="res://Enemies/Scripts/BasicEnemyHitbox.gd" id="5_ulb6b"]
+[ext_resource type="Texture2D" uid="uid://vod05aw7217s" path="res://Textures/Tileset (2).png" id="1_shuj8"]
+[ext_resource type="Texture2D" uid="uid://bubvyh6myossl" path="res://Textures/icon.svg" id="3_yusi1"]
+[ext_resource type="Script" path="res://Enemy Template/EnemyMovement.gd" id="4_fe3db"]
+[ext_resource type="PackedScene" uid="uid://clbsms5osi5bt" path="res://Scenes/crabPrefab.tscn" id="5_cbwh1"]
+[ext_resource type="Script" path="res://Enemy Template/BasicEnemyHitbox.gd" id="5_ulb6b"]
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_2lug6"]
 
@@ -60,6 +60,17 @@ physics_layer_0/collision_layer = 1
 sources/0 = SubResource("TileSetAtlasSource_i7ey5")
 sources/1 = SubResource("TileSetAtlasSource_6nwfv")
 
+[sub_resource type="SpriteFrames" id="SpriteFrames_gsr0c"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_yusi1")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_kakx3"]
 radius = 92.0
 height = 184.0
@@ -86,7 +97,24 @@ polygon = PackedVector2Array(-2, -376, 573, -381, 573, 1, -2, -1)
 
 [node name="Enemies" type="Node2D" parent="."]
 
-[node name="1" parent="Enemies" instance=ExtResource("2_2u8ft")]
+[node name="1" type="AnimatedSprite2D" parent="Enemies" groups=["Enemies"]]
+position = Vector2(653, -444)
+sprite_frames = SubResource("SpriteFrames_gsr0c")
+frame_progress = 0.948606
+script = ExtResource("4_fe3db")
+
+[node name="Enemy hitbox" type="Area2D" parent="Enemies/1" groups=["Enemies"]]
+collision_layer = 2
+collision_mask = 2
+monitoring = false
+script = ExtResource("5_ulb6b")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Enemies/1/Enemy hitbox"]
+light_mask = 2
+visibility_layer = 2
+position = Vector2(-1, 1)
+scale = Vector2(0.720561, 0.720561)
+shape = SubResource("CapsuleShape2D_kakx3")
 
 [node name="BouncePads" type="Node2D" parent="Enemies"]
 
@@ -205,3 +233,11 @@ text = "You WIN!!!!!!!"
 [node name="CRNABFOWBDFHOABW" type="Node2D" parent="."]
 
 [node name="CRAB" parent="." instance=ExtResource("5_cbwh1")]
+
+[connection signal="tree_exited" from="Enemies/1/Enemy hitbox" to="Enemies/1" method="_on_enemy_hitbox_tree_exited"]
+[connection signal="tree_exited" from="Enemies/BouncePads/Node2D/Enemy hitbox" to="Enemies/1" method="_on_enemy_hitbox_tree_exited"]
+[connection signal="tree_exited" from="Enemies/BouncePads/Node2D/Enemy hitbox2" to="Enemies/1" method="_on_enemy_hitbox_tree_exited"]
+[connection signal="tree_exited" from="Enemies/BouncePads/Node2D/Enemy hitbox3" to="Enemies/1" method="_on_enemy_hitbox_tree_exited"]
+[connection signal="tree_exited" from="Enemies/BouncePads/Node2D/Enemy hitbox4" to="Enemies/1" method="_on_enemy_hitbox_tree_exited"]
+[connection signal="tree_exited" from="Enemies/BouncePads/Node2D/Enemy hitbox5" to="Enemies/1" method="_on_enemy_hitbox_tree_exited"]
+[connection signal="tree_exited" from="Enemies/BouncePads/Node2D/Enemy hitbox6" to="Enemies/1" method="_on_enemy_hitbox_tree_exited"]

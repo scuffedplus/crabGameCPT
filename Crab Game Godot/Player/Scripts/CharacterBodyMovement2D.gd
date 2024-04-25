@@ -118,7 +118,7 @@ func _physics_process(delta):
 			if (Midair && Poundability && !Stunned):
 				GroundPound()
 		else:
-			if (PunchCoolDown.is_stopped() && !Punching):
+			if (PunchCoolDown.is_stopped() && !Punching && !Stunned):
 				punch()
 
 #JUMPING LOGIC
@@ -167,7 +167,7 @@ func _physics_process(delta):
 		#Accelerate to the right unless moving left OR midair. Speed limited to MaxWalkSpeed
 			if (Input.is_action_pressed("ui_right")):
 				$Animations.flip_h = false
-				FacingRight = false
+				FacingRight = true
 				_Walk.play("Walk")
 				if ((velocity.x < MaxWalkSpeed && velocity.x >= 0) or (Midair && velocity.x < MaxWalkSpeed)):
 					velocity.x += Accel	
@@ -315,8 +315,10 @@ func Knockback(Enemy):
 
 
 func _on_animation_player_animation_finished(anim_name):
-	Punching = false
-	print("Punching False")
+	if (anim_name == "Punch"):
+		Punching = false
+		FullStun = false
+		Ylocked = false
 
 func PunchReset():
 	print("Punch reset")
@@ -328,8 +330,9 @@ func PunchReset():
 	
 
 func _on_punch_hitbox_area_entered(area):
+	print("Damage Dealt")
 	if (area.is_in_group("Enemies")):
-			area.TakeDamage(3)
+		area.TakeDamage(3)
 
 
 func _on_timer_timeout():
@@ -339,10 +342,8 @@ func _on_timer_timeout():
 
 func punch():
 	print("Punched")
-	if (Input.is_action_pressed("ui_right")):
-		$Animations.flip_h = false
-	if (Input.is_action_pressed("ui_left")):
-		$Animations.flip_h = true
+	if (!FacingRight):
+		$PunchHitbox/CollisionShape2D.scale.x = -1
 	_Walk.play("Punch")
 	velocity.x = velocity.x/10
 	FullStun = true
@@ -351,5 +352,5 @@ func punch():
 	Comboing = true
 	Punching = true
 	$ComboTimer.start()
-	if (ComboHit == 3):
+	if (ComboHit == 4):
 		PunchReset()

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dp071bxdwwdep"
-path="res://.godot/imported/SandTileset.png-75da13d03efd967b2ced4958732a4e4c.ctex"
+uid="uid://cmpjrowlqpwdd"
+path="res://.godot/imported/BasicEnemySprite.png-72d4657e0df090535d9acda10def9b45.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Textures/SandTileset.png"
-dest_files=["res://.godot/imported/SandTileset.png-75da13d03efd967b2ced4958732a4e4c.ctex"]
+source_file="res://Enemies/Sprites/BasicEnemySprite.png"
+dest_files=["res://.godot/imported/BasicEnemySprite.png-72d4657e0df090535d9acda10def9b45.ctex"]
 
 [params]
 

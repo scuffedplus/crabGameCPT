@@ -1,0 +1,130 @@
+[gd_scene load_steps=12 format=3 uid="uid://btlo7ocnjxvuh"]
+
+[ext_resource type="Script" path="res://Enemies/Scripts/BasicEnemtMovement.gd" id="1_6ivqf"]
+[ext_resource type="Script" path="res://Enemies/Scripts/BasicEnemyHitbox.gd" id="2_0801d"]
+[ext_resource type="Texture2D" uid="uid://cmpjrowlqpwdd" path="res://Enemies/Sprites/BasicEnemySprite.png" id="2_j2bid"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_0yke4"]
+size = Vector2(29.4375, 15.875)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_dm2av"]
+size = Vector2(47.9785, 28.8961)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_jcxgi"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_2gy3r"]
+
+[sub_resource type="Animation" id="Animation_txmhj"]
+resource_name = "Death"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [2]
+}
+
+[sub_resource type="Animation" id="Animation_xn6y5"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="Animation" id="Animation_fqam8"]
+resource_name = "Walk"
+length = 0.5
+loop_mode = 1
+step = 0.05
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.25),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [0, 1]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_s4myu"]
+_data = {
+"Death": SubResource("Animation_txmhj"),
+"RESET": SubResource("Animation_xn6y5"),
+"Walk": SubResource("Animation_fqam8")
+}
+
+[node name="EnemyCrab" type="Node2D"]
+
+[node name="Movement" type="CharacterBody2D" parent="."]
+script = ExtResource("1_6ivqf")
+
+[node name="Physics" type="CollisionShape2D" parent="Movement"]
+position = Vector2(0.625002, 28)
+scale = Vector2(4, 4)
+shape = SubResource("RectangleShape2D_0yke4")
+one_way_collision = true
+
+[node name="Hurtbox" type="Area2D" parent="Movement" groups=["Enemies"]]
+scale = Vector2(4, 4)
+collision_layer = 2
+collision_mask = 2
+monitoring = false
+script = ExtResource("2_0801d")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Movement/Hurtbox"]
+position = Vector2(-0.436166, 0.708773)
+shape = SubResource("RectangleShape2D_dm2av")
+
+[node name="LedgeDetection" type="Node2D" parent="Movement"]
+scale = Vector2(4, 4)
+
+[node name="Ledge Left" type="Area2D" parent="Movement/LedgeDetection"]
+position = Vector2(-10, 10)
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Movement/LedgeDetection/Ledge Left"]
+position = Vector2(-16, 7)
+scale = Vector2(0.213465, 0.213465)
+shape = SubResource("CircleShape2D_jcxgi")
+
+[node name="Ledge Right" type="Area2D" parent="Movement/LedgeDetection"]
+position = Vector2(10, 10)
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Movement/LedgeDetection/Ledge Right"]
+position = Vector2(15, 7)
+scale = Vector2(0.213, 0.213)
+shape = SubResource("CircleShape2D_2gy3r")
+
+[node name="Sprite2D" type="Sprite2D" parent="Movement"]
+position = Vector2(-0.750005, -6.25)
+scale = Vector2(0.638346, 0.638346)
+texture = ExtResource("2_j2bid")
+hframes = 5
+vframes = 5
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Movement/Sprite2D"]
+libraries = {
+"": SubResource("AnimationLibrary_s4myu")
+}
+
+[connection signal="tree_exiting" from="Movement/Hurtbox" to="Movement" method="_on_hurtbox_tree_exiting"]
+[connection signal="body_exited" from="Movement/LedgeDetection/Ledge Left" to="Movement" method="_on_ledge_left_body_exited"]
+[connection signal="body_entered" from="Movement/LedgeDetection/Ledge Right" to="Movement" method="_on_ledge_right_body_entered"]
+[connection signal="body_exited" from="Movement/LedgeDetection/Ledge Right" to="Movement" method="_on_ledge_right_body_exited"]
