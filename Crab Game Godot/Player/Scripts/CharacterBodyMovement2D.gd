@@ -115,7 +115,7 @@ func _physics_process(delta):
 #ATTACKING LOGIC
 	if (Input.is_key_pressed(KEY_X)):
 		if (Input.is_action_pressed("ui_down")):
-			if (Midair && Poundability && !Stunned):
+			if (Midair && Poundability && !Stunned && !Punching):
 				GroundPound()
 		else:
 			if (PunchCoolDown.is_stopped() && !Punching && !Stunned):
@@ -154,7 +154,7 @@ func _physics_process(delta):
 				else:
 					velocity.x += Decel
 			
-			#Accelerate to the left unless moving right OR midair. Speed limited to MaxWalkSpeed
+			#Accelerate to the left unless moving right OR midair. Speed limited to MaxWalkSpeedS
 			
 			if (Input.is_action_pressed("ui_left")):
 				$Animations.flip_h = true
@@ -162,15 +162,15 @@ func _physics_process(delta):
 				_Walk.play("Walk")
 				if ((velocity.x > -MaxWalkSpeed && velocity.x <= 0) or (Midair && velocity.x > -MaxWalkSpeed)):
 					velocity.x -= Accel
-					
-				
-		#Accelerate to the right unless moving left OR midair. Speed limited to MaxWalkSpeed
+
+			#Accelerate to the right unless moving left OR midair. Speed limited to MaxWalkSpeed
+
 			if (Input.is_action_pressed("ui_right")):
 				$Animations.flip_h = false
 				FacingRight = true
 				_Walk.play("Walk")
 				if ((velocity.x < MaxWalkSpeed && velocity.x >= 0) or (Midair && velocity.x < MaxWalkSpeed)):
-					velocity.x += Accel	
+					velocity.x += Accel
 
 				
 	if !(Input.is_action_pressed("ui_right")) and !(Input.is_action_pressed("ui_left")):
@@ -343,7 +343,7 @@ func _on_timer_timeout():
 func punch():
 	print("Punched")
 	if (!FacingRight):
-		$PunchHitbox/CollisionShape2D.scale.x = -1
+		$PunchHitbox.scale.x = -1
 	_Walk.play("Punch")
 	velocity.x = velocity.x/10
 	FullStun = true
