@@ -34,7 +34,7 @@ var Inventory = [0, 0, 0, 0, 0, 0]
 var PlayerPosition = position.x
 
 const MaxHP = 3
-var CurrentHP = 20000
+var CurrentHP = 3
 var JumpState = false
 const MaxWalkSpeed = 700
 const MaxRunSpeed = 1200
@@ -54,6 +54,7 @@ const JUMP_VELOCITY = -1200.0
 
 # Get the gravity from the project settings to be synced with RigidBody nodes.
 var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")*2
+var HoldingMove
 
 #Different States for the player are below:
 var Poundability = true
@@ -81,12 +82,51 @@ NOTE:
 """
 
 func _physics_process(delta):
+	
+	Checks()
+	Gravity(delta)
+	AttackLogic()
+	JumpLogic()
+	MovementLogic()
+	DecelerationLogic()
+	
+	AnimationHandler()
+	
+	move_and_slide()
+	floor_max_angle = 0.9
+	floor_constant_speed = true
+	floor_snap_length = 15.0
+	apply_floor_snap()
 
+	var testA = Vector2(1, 1)
+	var rotate=(get_floor_angle())
+	var PoRotate=(get_floor_normal())
+	var OpRotate = -PoRotate
+	var game = OpRotate.dot(testA)
+
+	if is_on_floor():
+		if game < 1.1:
+			$Animations.rotation = rotate
+		if game > 0.9:
+			$Animations.rotation = -rotate
+	else:
+		$Animations.rotation = $Animations.rotation - $Animations.rotation*0.10
+		
+
+func Checks():
 	Midair = !is_on_floor()
-	
-#JUMPING CODE
-	var HoldingMove = Input.is_action_pressed("ui_right") && Input.is_action_pressed("ui_left")
-	
+	HoldingMove = Input.is_action_pressed("ui_right") && Input.is_action_pressed("ui_left")
+
+func AttackLogic():
+	if (Input.is_key_pressed(KEY_X)):
+		if (Input.is_action_pressed("ui_down")):
+			if (Midair && Poundability && !Stunned && !Punching):
+				GroundPound()
+		else:
+			if (PunchCoolDown.is_stopped() && !Punching && !Stunned):
+				punch()
+
+func Gravity(delta):
 	if (Midair):
 		if (Ylocked):
 			velocity.y = 0
@@ -110,17 +150,8 @@ func _physics_process(delta):
 		Accel = 0
 	else:
 		Accel = WalkAccel
-	
-#ATTACKING LOGIC
-	if (Input.is_key_pressed(KEY_X)):
-		if (Input.is_action_pressed("ui_down")):
-			if (Midair && Poundability && !Stunned && !Punching):
-				GroundPound()
-		else:
-			if (PunchCoolDown.is_stopped() && !Punching && !Stunned):
-				punch()
 
-#JUMPING LOGIC
+func JumpLogic():
 	if (Input.is_key_pressed(KEY_Z) and is_on_floor()):
 		velocity.y = JUMP_VELOCITY
 		JumpState = true
@@ -128,7 +159,7 @@ func _physics_process(delta):
 		if (!Input.is_key_pressed(KEY_Z) && velocity.y < 0):
 			velocity.y = velocity.y/2
 
-#LEFT AND RIGHT ACCELLERATION CODE
+func MovementLogic():
 	if (FullStun == false):
 		if (Input.is_key_pressed(KEY_SHIFT)):
 			if (Input.is_action_pressed("ui_left")):
@@ -158,19 +189,13 @@ func _physics_process(delta):
 				FacingRight = false
 				if ((velocity.x > -MaxWalkSpeed && velocity.x <= 0) or (Midair && velocity.x > -MaxWalkSpeed)):
 					velocity.x -= Accel
-
-			#Accelerate to the right unless moving left OR midair. Speed limited to MaxWalkSpeed
-
 			if (Input.is_action_pressed("ui_right")):
 				$Animations.flip_h = false
 				FacingRight = true
 				if ((velocity.x < MaxWalkSpeed && velocity.x >= 0) or (Midair && velocity.x < MaxWalkSpeed)):
 					velocity.x += Accel
 
-#LEFT AND RIGHT DECELLERATION CODE
-
-#Decelerates if grounded and not holding an input
-#Also some very messed up code to make the rate of deceleration exponential
+func DecelerationLogic():
 	if (!Midair):
 		if (velocity.x <= Decel && velocity.x >= -Decel):
 			if (!HoldingMove):
@@ -191,30 +216,6 @@ func _physics_process(delta):
 					velocity.x += Decel
 				if (Decel < MaxDecel):
 					Decel = Decel * DecelMultiplier
-	
-	AnimationHandler()
-	
-	move_and_slide()
-	floor_max_angle = 0.9
-	floor_constant_speed = true
-	floor_snap_length = 15.0
-	apply_floor_snap()
-
-	var testA = Vector2(1, 1)
-	var rotate=(get_floor_angle())
-	var PoRotate=(get_floor_normal())
-	var OpRotate = -PoRotate
-	var game = OpRotate.dot(testA)
-
-	if is_on_floor():
-		if game < 1.1:
-			$Animations.rotation = rotate
-		if game > 0.9:
-			$Animations.rotation = -rotate
-	else:
-		$Animations.rotation = $Animations.rotation - $Animations.rotation*0.10
-		
-
 
 func MovingRight():
 	return(FacingRight)
@@ -349,7 +350,7 @@ func AnimationHandler():
 		if (velocity.y == 0):
 			if (velocity.x == 0):
 				_Animations.play("Idle")
-			elif (abs(velocity.x) < MaxWalkSpeed+400):
+			elif (abs(velocity.x) < MaxWalkSpeed+450):
 				_Animations.play("Walk")
 			else:
 				_Animations.play("Run")

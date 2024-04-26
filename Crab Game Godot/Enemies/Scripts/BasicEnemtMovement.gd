@@ -14,12 +14,9 @@ var MaxFallSpeed = 400
 
 var Alive = true
 
-# Called when the node enters the scene tree for the first time.
 func _ready():
 	CurrentDir = -Speed
 
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	if (Alive):
 		Gravity()
@@ -43,22 +40,11 @@ func Gravity():
 	velocity.y = Fallspeed
 
 func Move():
-	#Ledge Detection
 	if ($LedgeDetection/LeftSight.is_colliding() == false):
 		CurrentDir = Speed
-		#LeftFooting = true
 	if ($LedgeDetection/RightSight.is_colliding() == false):
 		CurrentDir = -Speed
-		#RightFooting = true
-	"""
-	if (RightFooting & !LeftFooting):
-		CurrentDir = Speed
-	elif (LeftFooting & !RightFooting):
-		CurrentDir = -Speed
-	elif (!LeftFooting & !RightFooting):
-		CurrentDir = 0
-	"""
-	#Wall Detection
+
 	if ($WallDetection/LeftWall.is_colliding()):
 		CurrentDir = Speed
 	if ($WallDetection/RightWall.is_colliding()):
