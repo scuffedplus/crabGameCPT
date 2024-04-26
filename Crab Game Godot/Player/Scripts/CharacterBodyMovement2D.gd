@@ -18,7 +18,7 @@ var ComboHit = 0
 const Bounce = -750
 const GPBounce = -1200
 
-@onready var _Walk = $Animations/AnimationPlayer
+@onready var _Animations = $Animations/AnimationPlayer
 @onready var PunchCoolDown = $PunchCoolDown
 
 var Inventory = [0, 0, 0, 0, 0, 0]
@@ -34,11 +34,11 @@ var Inventory = [0, 0, 0, 0, 0, 0]
 var PlayerPosition = position.x
 
 const MaxHP = 3
-var CurrentHP = 300
+var CurrentHP = 20000
 var JumpState = false
 const MaxWalkSpeed = 700
 const MaxRunSpeed = 1200
-var Accel = 100
+var Accel = 70
 const WalkAccel = 100
 var floorDir = get_floor_normal
 var Decel = 3
@@ -81,8 +81,7 @@ NOTE:
 """
 
 func _physics_process(delta):
-	
-	PlayerPosition = position.x
+
 	Midair = !is_on_floor()
 	
 #JUMPING CODE
@@ -134,14 +133,12 @@ func _physics_process(delta):
 		if (Input.is_key_pressed(KEY_SHIFT)):
 			if (Input.is_action_pressed("ui_left")):
 				$Animations.flip_h = true
-				_Walk.play("Run")
 				if ((velocity.x > -MaxRunSpeed && velocity.x <= 0) or (Midair && velocity.x > -MaxRunSpeed)):
 					velocity.x -= Accel
 					FacingRight = false
 					
 			if (Input.is_action_pressed("ui_right")):
 				$Animations.flip_h = false
-				_Walk.play("Run")
 				if ((velocity.x < MaxRunSpeed && velocity.x >= 0) or (Midair && velocity.x < MaxRunSpeed)):
 	
 					velocity.x += Accel
@@ -159,7 +156,6 @@ func _physics_process(delta):
 			if (Input.is_action_pressed("ui_left")):
 				$Animations.flip_h = true
 				FacingRight = false
-				_Walk.play("Walk")
 				if ((velocity.x > -MaxWalkSpeed && velocity.x <= 0) or (Midair && velocity.x > -MaxWalkSpeed)):
 					velocity.x -= Accel
 
@@ -168,16 +164,8 @@ func _physics_process(delta):
 			if (Input.is_action_pressed("ui_right")):
 				$Animations.flip_h = false
 				FacingRight = true
-				_Walk.play("Walk")
 				if ((velocity.x < MaxWalkSpeed && velocity.x >= 0) or (Midair && velocity.x < MaxWalkSpeed)):
 					velocity.x += Accel
-
-				
-	if !(Input.is_action_pressed("ui_right")) and !(Input.is_action_pressed("ui_left")):
-		if ((_Walk.current_animation == "Walk") or (_Walk.current_animation == "Run")):
-			_Walk.play("Idle") 
-		
-
 
 #LEFT AND RIGHT DECELLERATION CODE
 
@@ -204,6 +192,8 @@ func _physics_process(delta):
 				if (Decel < MaxDecel):
 					Decel = Decel * DecelMultiplier
 	
+	AnimationHandler()
+	
 	move_and_slide()
 	floor_max_angle = 0.9
 	floor_constant_speed = true
@@ -215,7 +205,6 @@ func _physics_process(delta):
 	var PoRotate=(get_floor_normal())
 	var OpRotate = -PoRotate
 	var game = OpRotate.dot(testA)
-
 
 	if is_on_floor():
 		if game < 1.1:
@@ -248,16 +237,20 @@ func _on_collectible_detection_area_entered(area):
 	if (CollectibleInfo[2]):
 		area.Die()
 		
-	for n in CollectibleInfo[1]:
-		Inventory[CollectibleInfo[0]] += 1
-		print(Inventory[CollectibleInfo[0]])
+	if (CollectibleInfo[0] == 0):
+		for n in CollectibleInfo[1]:
+			Inventory[CollectibleInfo[0]] += 1
+			print(Inventory[CollectibleInfo[0]])
+			
+	if (CollectibleInfo[0] == 5):
+		print("YOU WIN!")
+		pass
 
 func GroundPound():
 	Poundability = false
 	velocity.y = 0
 	velocity.x = 0
 	Stunned = true
-	print("Stunned!")
 	await get_tree().create_timer(0.10).timeout
 	velocity.y -= GPSpeed
 
@@ -301,11 +294,10 @@ func Boing():
 	
 func Knockback(Enemy):
 	Invicible = true
-	print("Invincible!")
 	Stunned = true
 	StunDelay = true
-	print("Stunned!")
-	var EnemyPosition = Enemy.get_parent().position.x
+	var EnemyPosition = Enemy.get_parent().global_position.x
+	PlayerPosition = global_position.x
 	velocity.y = -700
 	position.y -= 10
 	if (EnemyPosition > PlayerPosition):
@@ -321,17 +313,14 @@ func _on_animation_player_animation_finished(anim_name):
 		Ylocked = false
 
 func PunchReset():
-	print("Punch reset")
 	FullStun = false
 	Ylocked = false
-	_Walk.play("Idle")
 	$PunchCoolDown.start()
 	ComboHit = 0
 	$PunchHitbox.scale.x = 1
 	
 
 func _on_punch_hitbox_area_entered(area):
-	print("Damage Dealt")
 	if (area.is_in_group("Enemies")):
 		area.TakeDamage(3)
 
@@ -342,10 +331,8 @@ func _on_timer_timeout():
 	PunchReset()
 
 func punch():
-	print("Punched")
 	if (!FacingRight):
 		$PunchHitbox.scale.x = -1
-	_Walk.play("Punch")
 	velocity.x = velocity.x/10
 	FullStun = true
 	Ylocked = true
@@ -353,5 +340,20 @@ func punch():
 	Comboing = true
 	Punching = true
 	$ComboTimer.start()
-	if (ComboHit == 4):
+	if (ComboHit == 3):
 		PunchReset()
+	_Animations.play("Punch")
+
+func AnimationHandler():
+	if (_Animations.current_animation != ("Punch")):
+		if (velocity.y == 0):
+			if (velocity.x == 0):
+				_Animations.play("Idle")
+			elif (abs(velocity.x) < MaxWalkSpeed+400):
+				_Animations.play("Walk")
+			else:
+				_Animations.play("Run")
+		elif (velocity.y >= 1):
+			_Animations.play("Fall")
+		else:
+			_Animations.play("Jump")

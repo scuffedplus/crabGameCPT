@@ -1,12 +1,11 @@
-[gd_scene load_steps=12 format=3 uid="uid://b52osxa8ckpay"]
+[gd_scene load_steps=10 format=3 uid="uid://b52osxa8ckpay"]
 
 [ext_resource type="Texture2D" uid="uid://vod05aw7217s" path="res://Environment/Tileset (2).png" id="1_h2lrw"]
 [ext_resource type="TileSet" uid="uid://c7duvx2gu2oke" path="res://Environment/1Level.tres" id="2_cd2fn"]
 [ext_resource type="PackedScene" uid="uid://cafy430qmrd4e" path="res://Collectibles/Presets/DragonFly.tscn" id="4_4t3il"]
-[ext_resource type="Script" path="res://Collectibles/Scripts/+DragonFly.gd" id="6_3guvl"]
+[ext_resource type="PackedScene" uid="uid://wyv63lsjiy41" path="res://Collectibles/Presets/+dragon_fly.tscn" id="5_jit4h"]
 [ext_resource type="PackedScene" uid="uid://clbsms5osi5bt" path="res://Player/Presets/crabPrefab.tscn" id="6_hfnai"]
-[ext_resource type="Script" path="res://Collectibles/Scripts/DragonFly.gd" id="6_l5n1i"]
-[ext_resource type="Texture2D" uid="uid://c57wnk0x308mh" path="res://Collectibles/Textures/CoinPlaceholder.png" id="7_jd6wk"]
+[ext_resource type="PackedScene" uid="uid://bqevqwramjafs" path="res://Collectibles/Presets/Coconut(goal).tscn" id="9_owbc3"]
 [ext_resource type="PackedScene" uid="uid://btlo7ocnjxvuh" path="res://Enemies/Presets/EnemyCrabPreset.tscn" id="9_ufhes"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_6adhy"]
@@ -28,8 +27,6 @@ texture_region_size = Vector2i(192, 192)
 tile_size = Vector2i(192, 192)
 sources/0 = SubResource("TileSetAtlasSource_6adhy")
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_v61sc"]
-
 [node name="Level" type="Node2D"]
 
 [node name="CRAB" parent="." instance=ExtResource("6_hfnai")]
@@ -43,7 +40,6 @@ position = Vector2(156, 35)
 motion_scale = Vector2(0.3, 0.05)
 
 [node name="TileMap" type="TileMap" parent="ParallaxBackground/ParallaxLayer"]
-visible = false
 position = Vector2(-4305, -232)
 scale = Vector2(2.035, 2.035)
 tile_set = SubResource("TileSet_p061v")
@@ -62,37 +58,7 @@ layer_0/tile_data = PackedInt32Array(-655438, 196608, 0, -589902, 196608, 0, -52
 
 [node name="Collectible" parent="CoinTest" instance=ExtResource("4_4t3il")]
 
-[node name="Collectible2" type="Area2D" parent="CoinTest"]
-position = Vector2(127, 210)
-collision_layer = 4
-collision_mask = 4
-monitoring = false
-script = ExtResource("6_l5n1i")
-
-[node name="Sprite2D" type="Sprite2D" parent="CoinTest/Collectible2"]
-position = Vector2(680, -260)
-scale = Vector2(0.192114, 0.192114)
-texture = ExtResource("7_jd6wk")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="CoinTest/Collectible2"]
-position = Vector2(680, -260)
-scale = Vector2(4.92, 4.92)
-shape = SubResource("CircleShape2D_v61sc")
-
-[node name="Collectible3" type="Area2D" parent="CoinTest"]
-position = Vector2(1418, -170)
-collision_layer = 4
-collision_mask = 4
-monitoring = false
-script = ExtResource("6_3guvl")
-
-[node name="Sprite2D" type="Sprite2D" parent="CoinTest/Collectible3"]
-scale = Vector2(0.192114, 0.192114)
-texture = ExtResource("7_jd6wk")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="CoinTest/Collectible3"]
-scale = Vector2(4.92, 4.92)
-shape = SubResource("CircleShape2D_v61sc")
+[node name="+DragonFly" parent="CoinTest" instance=ExtResource("5_jit4h")]
 
 [node name="EnemyCrab" parent="." instance=ExtResource("9_ufhes")]
 position = Vector2(4072, 401)
@@ -114,3 +80,15 @@ position = Vector2(-1132, -148)
 
 [node name="EnemyCrab7" parent="." instance=ExtResource("9_ufhes")]
 position = Vector2(5610, 344)
+
+[node name="Coconut(Goal)" parent="." instance=ExtResource("9_owbc3")]
+position = Vector2(7479, 22)
+
+[node name="EnemyCrab8" parent="." instance=ExtResource("9_ufhes")]
+position = Vector2(6773, 20)
+
+[node name="EnemyCrab9" parent="." instance=ExtResource("9_ufhes")]
+position = Vector2(6768, -100)
+
+[node name="EnemyCrab10" parent="." instance=ExtResource("9_ufhes")]
+position = Vector2(6758, -234)
