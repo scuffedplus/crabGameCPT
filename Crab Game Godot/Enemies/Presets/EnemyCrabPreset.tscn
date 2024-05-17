@@ -5,10 +5,10 @@
 [ext_resource type="Texture2D" uid="uid://cmpjrowlqpwdd" path="res://Enemies/Sprites/BasicEnemySprite.png" id="2_j2bid"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_0yke4"]
-size = Vector2(29.4375, 14.1875)
+size = Vector2(42.25, 30)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_dm2av"]
-size = Vector2(47.9785, 28.8961)
+size = Vector2(47.8031, 35.9068)
 
 [sub_resource type="Animation" id="Animation_txmhj"]
 resource_name = "Death"
@@ -71,7 +71,7 @@ _data = {
 script = ExtResource("1_6ivqf")
 
 [node name="Physics" type="CollisionShape2D" parent="Movement"]
-position = Vector2(0.625002, 24.625)
+position = Vector2(-2.5, -2)
 scale = Vector2(4, 4)
 shape = SubResource("RectangleShape2D_0yke4")
 one_way_collision = true
@@ -84,7 +84,7 @@ monitoring = false
 script = ExtResource("2_0801d")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Movement/Hurtbox"]
-position = Vector2(-0.436166, 0.708773)
+position = Vector2(-0.348458, -2.79659)
 shape = SubResource("RectangleShape2D_dm2av")
 
 [node name="LedgeDetection" type="Node2D" parent="Movement"]

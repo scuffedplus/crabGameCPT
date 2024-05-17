@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://fc8jnel705d7"]
+
+[ext_resource type="Script" path="res://Enemies/Scripts/BasicEnemyHitbox.gd" id="1_dpchb"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6vb74"]
+
+[node name="KillBox" type="Node2D"]
+
+[node name="Area2D" type="Area2D" parent="."]
+collision_layer = 2
+collision_mask = 2
+monitoring = false
+script = ExtResource("1_dpchb")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource("RectangleShape2D_6vb74")

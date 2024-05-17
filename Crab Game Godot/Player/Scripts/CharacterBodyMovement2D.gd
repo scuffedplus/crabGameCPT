@@ -5,6 +5,9 @@ extends CharacterBody2D
 var Punching = false
 var Falling = false
 
+var Uppercutable = true
+var Uppercutting = false
+
 var Midair
 var FacingRight
 const GPSpeed = -1200
@@ -82,7 +85,6 @@ NOTE:
 """
 
 func _physics_process(delta):
-	
 	Checks()
 	Gravity(delta)
 	AttackLogic()
@@ -99,6 +101,7 @@ func _physics_process(delta):
 	apply_floor_snap()
 
 	var testA = Vector2(1, 1)
+	@warning_ignore("shadowed_variable_base_class")
 	var rotate=(get_floor_angle())
 	var PoRotate=(get_floor_normal())
 	var OpRotate = -PoRotate
@@ -116,15 +119,23 @@ func _physics_process(delta):
 func Checks():
 	Midair = !is_on_floor()
 	HoldingMove = Input.is_action_pressed("ui_right") && Input.is_action_pressed("ui_left")
+	if (is_on_floor()):
+		Uppercutable = true
+	if (Uppercutting):
+		velocity.y = -2500
 
 func AttackLogic():
 	if (Input.is_key_pressed(KEY_X)):
-		if (Input.is_action_pressed("ui_down")):
-			if (Midair && Poundability && !Stunned && !Punching):
-				GroundPound()
-		else:
+		if ( !(Input.is_action_pressed("ui_down") or Input.is_action_pressed("ui_up")) ):
 			if (PunchCoolDown.is_stopped() && !Punching && !Stunned):
 				punch()
+		elif Input.is_action_pressed("ui_down"):
+			if (Midair && Poundability && !Stunned && !Punching):
+				GroundPound()
+		elif Input.is_action_pressed("ui_up"):
+			if (Uppercutable):
+				Uppercut()
+			
 
 func Gravity(delta):
 	if (Midair):
@@ -133,7 +144,8 @@ func Gravity(delta):
 		else:
 			MaxDecel = MidAirMaxDecel
 			if (Poundability):
-				velocity.y += gravity * delta
+				if (!Uppercutting):
+					velocity.y += gravity * delta
 	else:
 		JumpState = false
 		MaxDecel = OnGroundMaxDecel
@@ -181,8 +193,6 @@ func MovementLogic():
 					velocity.x -= Decel
 				else:
 					velocity.x += Decel
-			
-			#Accelerate to the left unless moving right OR midair. Speed limited to MaxWalkSpeedS
 			
 			if (Input.is_action_pressed("ui_left")):
 				$Animations.flip_h = true
@@ -247,6 +257,11 @@ func _on_collectible_detection_area_entered(area):
 		print("YOU WIN!")
 		pass
 
+func Uppercut():
+	Uppercutable = false
+	Uppercutting = true
+	$UpperCutCoolDown.start()
+
 func GroundPound():
 	Poundability = false
 	velocity.y = 0
@@ -261,7 +276,6 @@ func UnGroundPound():
 
 func TakeDamage(Damager):
 	CurrentHP -= Damager.GetDamage()
-	print("Youch!!!")
 	Knockback(Damager)
 	if (CurrentHP == 0):
 		die()
@@ -279,7 +293,7 @@ func _on_enemy_detection_area_entered(area):
 		if (area.is_in_group("Enemies")):
 			area.TakeDamage(3)
 		Boing()
-	
+
 
 #Called when bouncing on an enemy
 #Checks whether the player was groundpounding
@@ -358,3 +372,7 @@ func AnimationHandler():
 			_Animations.play("Fall")
 		else:
 			_Animations.play("Jump")
+
+
+func _on_upper_cut_cool_down_timeout():
+	Uppercutting = false
