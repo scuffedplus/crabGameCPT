@@ -3,6 +3,7 @@ extends CharacterBody2D
 @onready var _Animator = $Sprite2D/AnimationPlayer
 @onready var _Collision = $Physics
 var Fallspeed = 0
+var gravity = 6000
 
 const Speed = 230
 var CurrentDir
@@ -10,7 +11,7 @@ var CurrentDir
 var LeftFooting
 var RightFooting
 
-var MaxFallSpeed = 400
+var MaxFallSpeed = 750
 
 var Alive = true
 
@@ -19,7 +20,7 @@ func _ready():
 
 func _process(delta):
 	if (Alive):
-		Gravity()
+		Gravity(delta)
 		Move()
 		Animate()
 		move_and_slide()
@@ -27,17 +28,9 @@ func _process(delta):
 	else:
 		velocity.y = 0
 
-func Gravity():
-	if (!is_on_floor()):
-		if (Fallspeed < MaxFallSpeed):
-			if (Fallspeed == 0):
-				Fallspeed = 1
-			else:
-				Fallspeed = Fallspeed*1.2
-	else:
-		Fallspeed = 0
-	
-	velocity.y = Fallspeed
+func Gravity(delta):
+	if (!is_on_floor() && velocity.y<MaxFallSpeed):
+		velocity.y += gravity*delta
 
 func Move():
 	if ($LedgeDetection/LeftSight.is_colliding() == false):

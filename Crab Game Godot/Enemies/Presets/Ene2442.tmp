@@ -68,7 +68,6 @@ _data = {
 [node name="EnemyCrab" type="Node2D"]
 
 [node name="Movement" type="CharacterBody2D" parent="."]
-slide_on_ceiling = false
 script = ExtResource("1_6ivqf")
 
 [node name="Physics" type="CollisionShape2D" parent="Movement"]
