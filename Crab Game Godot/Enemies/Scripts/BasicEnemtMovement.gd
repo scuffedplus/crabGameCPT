@@ -71,16 +71,16 @@ func LedgePhysics():
 	apply_floor_snap()
 
 	var testA = Vector2(1, 1)
-	var rotate=(get_floor_angle())
+	var TargetRotation=(get_floor_angle())
 	var PoRotate=(get_floor_normal())
 	var OpRotate = -PoRotate
 	var game = OpRotate.dot(testA)
 
 	if is_on_floor():
 		if game < 1.1:
-			$Sprite2D.rotation = rotate
+			$Sprite2D.rotation = TargetRotation
 		if game > 0.9:
-			$Sprite2D.rotation = -rotate
+			$Sprite2D.rotation = -TargetRotation
 	else:
 		$Sprite2D.rotation = $Sprite2D.rotation - $Sprite2D.rotation*0.10
 	

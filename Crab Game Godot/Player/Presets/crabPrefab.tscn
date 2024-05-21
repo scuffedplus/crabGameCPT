@@ -130,7 +130,7 @@ radius = 10.8
 height = 27.8
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_jgayj"]
-size = Vector2(43.1301, 35.9239)
+size = Vector2(43.1301, 31.6617)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5t70p"]
 size = Vector2(38.1709, 31.3573)
@@ -142,15 +142,14 @@ size = Vector2(169.54, 141.554)
 position = Vector2(0, -100)
 
 [node name="Controller" type="CharacterBody2D" parent="."]
-position = Vector2(34, 41)
 script = ExtResource("1_ue8ds")
 
 [node name="Camera2D" type="Camera2D" parent="Controller"]
-position = Vector2(-1, -41)
+position = Vector2(6.84894, -70.1511)
 zoom = Vector2(0.5, 0.5)
 
 [node name="Animations" type="Sprite2D" parent="Controller"]
-position = Vector2(-28, 29)
+position = Vector2(6.84894, -70.1511)
 scale = Vector2(1.38463, 1.38463)
 texture = ExtResource("2_23vde")
 hframes = 5
@@ -163,49 +162,37 @@ libraries = {
 }
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Controller"]
-position = Vector2(-29, 42)
+position = Vector2(-0.151063, -53.1511)
 rotation = 1.5708
 scale = Vector2(10, 10)
 shape = SubResource("CapsuleShape2D_j7bah")
 
 [node name="EnemyDetection" type="Area2D" parent="Controller"]
-position = Vector2(-5, 25)
+position = Vector2(6.84894, -70.1511)
 collision_layer = 0
 collision_mask = 2
 monitorable = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Controller/EnemyDetection"]
-position = Vector2(-29.4998, 24.0001)
+position = Vector2(-8.00004, 13.0001)
 rotation = -3.14159
 scale = Vector2(6.65429, -6.56945)
 shape = SubResource("RectangleShape2D_jgayj")
 
 [node name="CollectibleDetection" type="Area2D" parent="Controller"]
-position = Vector2(-108, 162)
+position = Vector2(6.84894, -70.1511)
 scale = Vector2(1.35577, 1.71657)
 collision_layer = 4
 collision_mask = 4
 monitorable = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Controller/CollectibleDetection"]
-visible = false
-position = Vector2(53.1063, -78.0626)
 rotation = -3.14159
 scale = Vector2(6.61584, 4.87611)
 shape = SubResource("RectangleShape2D_5t70p")
 
-[node name="ComboTimer" type="Timer" parent="Controller"]
-one_shot = true
-
-[node name="PunchCoolDown" type="Timer" parent="Controller"]
-one_shot = true
-
-[node name="UpperCutCoolDown" type="Timer" parent="Controller"]
-wait_time = 0.3
-one_shot = true
-
 [node name="PunchHitbox" type="Area2D" parent="Controller"]
-position = Vector2(-28, 29)
+position = Vector2(8.69794, -90.1511)
 scale = Vector2(1.38463, 1.38463)
 disable_mode = 2
 collision_layer = 2
@@ -217,9 +204,18 @@ position = Vector2(155.276, 15.1665)
 shape = SubResource("RectangleShape2D_fu5n1")
 disabled = true
 
+[node name="ComboTimer" type="Timer" parent="Controller"]
+one_shot = true
+
+[node name="PunchCoolDown" type="Timer" parent="Controller"]
+one_shot = true
+
+[node name="ChargePunch" type="Timer" parent="Controller"]
+one_shot = true
+
 [connection signal="animation_finished" from="Controller/Animations/AnimationPlayer" to="Controller" method="_on_animation_player_animation_finished"]
 [connection signal="area_entered" from="Controller/EnemyDetection" to="Controller" method="_on_enemy_detection_area_entered"]
 [connection signal="area_entered" from="Controller/CollectibleDetection" to="Controller" method="_on_collectible_detection_area_entered"]
-[connection signal="timeout" from="Controller/ComboTimer" to="Controller" method="_on_timer_timeout"]
-[connection signal="timeout" from="Controller/UpperCutCoolDown" to="Controller" method="_on_upper_cut_cool_down_timeout"]
 [connection signal="area_entered" from="Controller/PunchHitbox" to="Controller" method="_on_punch_hitbox_area_entered"]
+[connection signal="timeout" from="Controller/ComboTimer" to="Controller" method="_on_timer_timeout"]
+[connection signal="timeout" from="Controller/ChargePunch" to="Controller" method="_on_charge_punch_timeout"]

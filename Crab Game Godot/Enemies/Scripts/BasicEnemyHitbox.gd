@@ -2,6 +2,7 @@ extends Area2D
 
 var Health = 3
 const Damage = 1
+var Stompable = true
 
 # Called when the node enters the scene tree for the first time.
 func _ready():

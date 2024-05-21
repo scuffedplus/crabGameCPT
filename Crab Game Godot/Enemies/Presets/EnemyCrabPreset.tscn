@@ -68,16 +68,18 @@ _data = {
 [node name="EnemyCrab" type="Node2D"]
 
 [node name="Movement" type="CharacterBody2D" parent="."]
+position = Vector2(3, 49)
 slide_on_ceiling = false
 script = ExtResource("1_6ivqf")
 
 [node name="Physics" type="CollisionShape2D" parent="Movement"]
-position = Vector2(-2.5, -2)
+position = Vector2(-2.18755, 41.8124)
 scale = Vector2(4, 4)
 shape = SubResource("RectangleShape2D_0yke4")
 one_way_collision = true
 
 [node name="Hurtbox" type="Area2D" parent="Movement" groups=["Enemies"]]
+position = Vector2(0.312447, 43.8124)
 scale = Vector2(4, 4)
 collision_layer = 2
 collision_mask = 2
@@ -89,6 +91,7 @@ position = Vector2(-0.348458, -2.79659)
 shape = SubResource("RectangleShape2D_dm2av")
 
 [node name="LedgeDetection" type="Node2D" parent="Movement"]
+position = Vector2(0.312447, 43.8124)
 scale = Vector2(4, 4)
 
 [node name="LeftSight" type="RayCast2D" parent="Movement/LedgeDetection"]
@@ -106,6 +109,7 @@ hit_from_inside = true
 collide_with_areas = true
 
 [node name="WallDetection" type="Node2D" parent="Movement"]
+position = Vector2(0.312447, 43.8124)
 
 [node name="LeftWall" type="RayCast2D" parent="Movement/WallDetection"]
 position = Vector2(-85, 4)
@@ -116,7 +120,7 @@ position = Vector2(80, 4)
 target_position = Vector2(10, 0)
 
 [node name="Sprite2D" type="Sprite2D" parent="Movement"]
-position = Vector2(-0.750005, -6.25)
+position = Vector2(-0.437558, 37.5624)
 scale = Vector2(0.638346, 0.638346)
 texture = ExtResource("2_j2bid")
 hframes = 5
