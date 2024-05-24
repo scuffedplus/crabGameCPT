@@ -28,7 +28,7 @@ var KnockbackY = 1000
 var WalkingMaxSpeed = 600
 var RunningMaxSpeed = 1300
 var CurrentMaxSpeed = WalkingMaxSpeed
-var MaxFallSpeed = 1750
+var MaxFallSpeed = 3500
 var PlayerXPosition
 var PlayerYPosition
 var GPBouncHeight = 3500
@@ -63,6 +63,7 @@ func _process(delta):
 		
 	if (Input.is_action_just_pressed("Attack")):
 		Attacking = true
+		PunchCharged = false
 		
 		if (Input.is_action_pressed("ui_down")):
 			_GroundPound()
@@ -235,3 +236,8 @@ func _on_jump_timer_timeout():
 func _AnimationHandler():
 	
 	pass
+
+
+func _on_punch_hitbox_area_entered(area):
+	if (area.is_in_group("Enemies")):
+		area.TakeDamage(3)

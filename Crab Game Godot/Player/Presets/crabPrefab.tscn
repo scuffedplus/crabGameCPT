@@ -201,6 +201,7 @@ monitorable = false
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Controller/PunchHitbox"]
 position = Vector2(193.615, 4)
 shape = SubResource("RectangleShape2D_fu5n1")
+disabled = true
 
 [node name="ComboTimer" type="Timer" parent="Controller"]
 one_shot = true
