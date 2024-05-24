@@ -13,6 +13,7 @@ var Sprinting = false
 var Idle = false
 var Falling = false
 var Invincible = false
+var Weightless = false
 
 #Variables for Combat:
 const MaxHP = 3
@@ -36,18 +37,30 @@ var BounceHeight = 2000
 var Accel = 3500
 var Decel = 6000
 var Gravity = 6000
-var JumpStrength = -2750
+var JumpStrength = -1850
+#was -2750 before changes to jumping.
 var ChargePunchTimer
+var Animator
+var PunchHitbox
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	ChargePunchTimer = $ChargePunch
+	Animator = $Animations/AnimationPlayer
+	PunchHitbox = $PunchHitbox
+	
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
+	
 	_StatusUpdate(delta)
+	
 	if (!Stunned):
-		_MovementLogic()
+		if (GPing):
+			velocity.x = 0
+		else:
+			_MovementLogic()
+		
 	if (Input.is_action_just_pressed("Attack")):
 		Attacking = true
 		
@@ -58,11 +71,27 @@ func _process(delta):
 	
 	if (Input.is_action_just_released("Attack")):
 		if (Attacking):
-			_Punch()
+			if (PunchCharged):
+				_ChargePunch()
+			else:
+				_Punch()
+	
+	if (!GPing):
+		if (!Weightless && !is_on_floor()):
+			_GravityLogic()
+	else:
+		_GPPhysics()
+	
+	_AnimationHandler()
+	
 	move_and_slide()
 
 func _Punch():
 	Attacking = false
+	Animator.play("Punch")
+	
+
+func _ChargePunch():
 	pass
 
 func _on_charge_punch_timeout():
@@ -71,8 +100,14 @@ func _on_charge_punch_timeout():
 func _BeginChargeAttack():
 	ChargePunchTimer.start()
 
+func _GPPhysics():
+	velocity.y = 2000
+	velocity.x = 0
+
 func _GroundPound():
 	Attacking = false
+	velocity.x = 0
+	GPing = true
 
 func _GroundPoundReset():
 	pass
@@ -81,6 +116,7 @@ func _StatusUpdate(delta):
 	PlayerXPosition = global_position.x
 	PlayerYPosition = global_position.y
 	Delta = delta
+	
 	if (Input.is_action_pressed("Sprint")):
 		Sprinting = true
 		CurrentMaxSpeed = RunningMaxSpeed
@@ -89,7 +125,10 @@ func _StatusUpdate(delta):
 		CurrentMaxSpeed = WalkingMaxSpeed
 	
 	if (!is_on_floor()):
-		_GravityLogic()
+		
+		if (GPing):
+			GPing = false
+		
 		if (velocity.y > 0):
 			Falling = true
 		else:
@@ -127,11 +166,17 @@ func _MovementLogic():
 	if ((Idle or velocity.x > CurrentMaxSpeed)):
 		_Decelerate()
 	
+	
+	
 	if (Input.is_action_just_pressed("ui_up") && is_on_floor()):
 		velocity.y = JumpStrength
+		Weightless = true
+		$JumpTimer.start()
+
 	if (Input.is_action_just_released("ui_up") && !Falling):
-		velocity.y = velocity.y/10
-	
+		$JumpTimer.stop()
+		Weightless = false
+
 func _Decelerate():
 	if (velocity.x != 0):
 		if (abs(velocity.x) <= Decel*Delta):
@@ -166,6 +211,10 @@ func _Knockback(enemy):
 	else:
 		velocity.x = KnockbackX
 
+func _Stun():
+	StunDelay = true
+	Stunned = true
+
 func _Boing():
 	Stunned = false
 	if (GPing == true):
@@ -178,3 +227,11 @@ func _Die():
 	print("You Died")
 	emit_signal("PlayerDied")
 	queue_free()
+
+
+func _on_jump_timer_timeout():
+	Weightless = false
+
+func _AnimationHandler():
+	
+	pass
