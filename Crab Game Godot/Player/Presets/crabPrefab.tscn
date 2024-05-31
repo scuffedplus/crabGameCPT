@@ -126,7 +126,7 @@ _data = {
 }
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_wi23d"]
-size = Vector2(260, 221)
+size = Vector2(260, 220)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_jgayj"]
 size = Vector2(43.1301, 31.6617)
@@ -161,7 +161,7 @@ libraries = {
 }
 
 [node name="Physics" type="CollisionShape2D" parent="Controller"]
-position = Vector2(0, -110.5)
+position = Vector2(0, -111)
 shape = SubResource("RectangleShape2D_wi23d")
 one_way_collision = true
 one_way_collision_margin = 0.0
@@ -212,7 +212,11 @@ one_shot = true
 one_shot = true
 
 [node name="JumpTimer" type="Timer" parent="Controller"]
-wait_time = 0.15
+wait_time = 0.17
+one_shot = true
+
+[node name="CoyoteTime" type="Timer" parent="Controller"]
+wait_time = 0.1
 one_shot = true
 
 [connection signal="animation_finished" from="Controller/Animations/AnimationPlayer" to="Controller" method="_on_animation_player_animation_finished"]
