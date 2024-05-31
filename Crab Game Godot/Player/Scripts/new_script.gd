@@ -14,6 +14,7 @@ var Idle = false
 var Falling = false
 var Invincible = false
 var Weightless = false
+var WallSliding = false
 
 #Variables for Combat:
 const MaxHP = 3
@@ -32,7 +33,9 @@ var MaxFallSpeed = 3500
 var PlayerXPosition
 var PlayerYPosition
 var GPBouncHeight = 3500
-var BounceHeight = 2000
+var BounceHeight = 1500
+var MaxWallSlideSpeed = 1000
+var WallSlideAccel = 6000
 
 var Accel = 3500
 var Decel = 6000
@@ -173,6 +176,17 @@ func _MovementLogic():
 		velocity.y = JumpStrength
 		Weightless = true
 		$JumpTimer.start()
+		
+#Wall sliding code
+	if (is_on_wall_only() && velocity.y > 0):
+		WallSliding = true
+		if (velocity.y > MaxWallSlideSpeed):
+			velocity.y -= WallSlideAccel*Delta
+	else:
+		WallSliding = false
+	
+	if (WallSliding == true):
+		print(WallSliding)
 
 	if (Input.is_action_just_released("ui_up") && !Falling):
 		$JumpTimer.stop()
