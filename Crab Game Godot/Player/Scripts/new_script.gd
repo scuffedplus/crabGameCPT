@@ -42,6 +42,8 @@ var Decel = 6000
 var Gravity = 6000
 var JumpStrength = -1850
 #was -2750 before changes to jumping.
+var CoyoteComplete
+
 var ChargePunchTimer
 var Animator
 var PunchHitbox
@@ -81,13 +83,12 @@ func _process(delta):
 				_Punch()
 	
 	if (!GPing):
-		if (!Weightless && !is_on_floor()):
+		if (!Weightless && !is_on_floor() && $CoyoteTime.is_stopped()):
 			_GravityLogic()
 	else:
 		_GPPhysics()
 	
 	_AnimationHandler()
-	
 	move_and_slide()
 
 func _Punch():
@@ -130,6 +131,9 @@ func _StatusUpdate(delta):
 	
 	if (!is_on_floor()):
 		
+		if (!CoyoteComplete):
+			_CoyoteTimeStart()
+		
 		if (GPing):
 			GPing = false
 		
@@ -139,6 +143,7 @@ func _StatusUpdate(delta):
 			Falling = false
 	else:
 		GPable = true
+		CoyoteComplete = false
 		if (StunDelay == false):
 			Stunned = false
 		StunDelay = false
@@ -172,7 +177,7 @@ func _MovementLogic():
 	
 	
 	
-	if (Input.is_action_just_pressed("ui_up") && is_on_floor()):
+	if (Input.is_action_just_pressed("ui_up") && (is_on_floor() or !$CoyoteTime.is_stopped())):
 		velocity.y = JumpStrength
 		Weightless = true
 		$JumpTimer.start()
@@ -251,6 +256,9 @@ func _AnimationHandler():
 	
 	pass
 
+func _CoyoteTimeStart():
+	$CoyoteTime.start()
+	CoyoteComplete = true
 
 func _on_punch_hitbox_area_entered(area):
 	if (area.is_in_group("Enemies")):
