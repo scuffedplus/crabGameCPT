@@ -6,6 +6,7 @@
 
 [sub_resource type="Animation" id="Animation_kpcpu"]
 resource_name = "Fall"
+length = 0.1
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -13,7 +14,7 @@ tracks/0/path = NodePath(".:frame")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0.1),
+"times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
 "values": [15]
@@ -21,7 +22,7 @@ tracks/0/keys = {
 
 [sub_resource type="Animation" id="Animation_1m0w8"]
 resource_name = "Idle"
-length = 2.0
+length = 2.8
 loop_mode = 1
 step = 0.05
 tracks/0/type = "value"
@@ -31,7 +32,7 @@ tracks/0/path = NodePath(".:frame")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.5, 0.7, 1.7),
+"times": PackedFloat32Array(0, 1, 1.5, 2.4),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 1,
 "values": [10, 11, 12, 11]
@@ -39,6 +40,7 @@ tracks/0/keys = {
 
 [sub_resource type="Animation" id="Animation_f7dag"]
 resource_name = "Jump"
+length = 0.1
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -54,7 +56,7 @@ tracks/0/keys = {
 
 [sub_resource type="Animation" id="Animation_8pkqo"]
 resource_name = "Punch"
-length = 0.4
+length = 0.3
 step = 0.025
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -63,7 +65,7 @@ tracks/0/path = NodePath(".:frame")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.05, 0.225, 0.3, 0.375),
+"times": PackedFloat32Array(0, 0.025, 0.15, 0.2, 0.25),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1),
 "update": 1,
 "values": [5, 6, 7, 8, 13]
@@ -71,11 +73,11 @@ tracks/0/keys = {
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("../PunchHitbox/CollisionShape2D:disabled")
+tracks/1/path = NodePath("../PunchHitbox/PunchCollider:disabled")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0.025, 0.275),
+"times": PackedFloat32Array(0.025, 0.2),
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
 "values": [false, true]
@@ -129,23 +131,24 @@ _data = {
 size = Vector2(260, 220)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_jgayj"]
-size = Vector2(43.1301, 31.6617)
+size = Vector2(43.1301, 36.4035)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5t70p"]
 size = Vector2(38.1709, 31.3573)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_fu5n1"]
-size = Vector2(190.77, 170)
+size = Vector2(257.77, 170)
 
 [node name="CRAB" type="Node2D"]
 position = Vector2(0, -100)
 
 [node name="Controller" type="CharacterBody2D" parent="."]
+floor_snap_length = 32.0
 script = ExtResource("1_ue8ds")
 
 [node name="Camera2D" type="Camera2D" parent="Controller"]
 position = Vector2(6.84894, -124.151)
-zoom = Vector2(0.5, 0.5)
+zoom = Vector2(0.25, 0.25)
 
 [node name="Animations" type="Sprite2D" parent="Controller"]
 position = Vector2(6.84894, -124.151)
@@ -173,7 +176,7 @@ collision_mask = 2
 monitorable = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Controller/EnemyDetection"]
-position = Vector2(-8.00004, 13.0001)
+position = Vector2(-8.00008, 28.5756)
 rotation = -3.14159
 scale = Vector2(6.65429, -6.56945)
 shape = SubResource("RectangleShape2D_jgayj")
@@ -197,8 +200,8 @@ collision_layer = 2
 collision_mask = 2
 monitorable = false
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Controller/PunchHitbox"]
-position = Vector2(193.615, 4)
+[node name="PunchCollider" type="CollisionShape2D" parent="Controller/PunchHitbox"]
+position = Vector2(227, 4)
 shape = SubResource("RectangleShape2D_fu5n1")
 disabled = true
 
@@ -219,6 +222,10 @@ one_shot = true
 wait_time = 0.1
 one_shot = true
 
+[node name="GPMomentum" type="Timer" parent="Controller"]
+wait_time = 0.25
+one_shot = true
+
 [connection signal="animation_finished" from="Controller/Animations/AnimationPlayer" to="Controller" method="_on_animation_player_animation_finished"]
 [connection signal="area_entered" from="Controller/EnemyDetection" to="Controller" method="_on_enemy_detection_area_entered"]
 [connection signal="area_entered" from="Controller/CollectibleDetection" to="Controller" method="_on_collectible_detection_area_entered"]
@@ -226,3 +233,4 @@ one_shot = true
 [connection signal="timeout" from="Controller/ComboTimer" to="Controller" method="_on_timer_timeout"]
 [connection signal="timeout" from="Controller/ChargePunch" to="Controller" method="_on_charge_punch_timeout"]
 [connection signal="timeout" from="Controller/JumpTimer" to="Controller" method="_on_jump_timer_timeout"]
+[connection signal="timeout" from="Controller/GPMomentum" to="Controller" method="_on_gp_momentum_timeout"]

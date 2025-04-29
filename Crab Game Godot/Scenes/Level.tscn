@@ -13,7 +13,7 @@ tile_size = Vector2i(192, 192)
 [node name="Level" type="Node2D"]
 
 [node name="CRAB" parent="." instance=ExtResource("6_hfnai")]
-position = Vector2(-3157, -2237)
+position = Vector2(-2249, -320)
 
 [node name="ParallaxBackground" type="ParallaxBackground" parent="."]
 follow_viewport_scale = 0.3
@@ -49,3 +49,15 @@ position = Vector2(7479, 22)
 
 [node name="EnemyCrab" parent="." instance=ExtResource("9_ufhes")]
 position = Vector2(-1583, -685)
+
+[node name="EnemyCrab2" parent="." instance=ExtResource("9_ufhes")]
+position = Vector2(908, -410)
+
+[node name="EnemyCrab3" parent="." instance=ExtResource("9_ufhes")]
+position = Vector2(1594, -639)
+
+[node name="EnemyCrab4" parent="." instance=ExtResource("9_ufhes")]
+position = Vector2(1903, -309)
+
+[node name="EnemyCrab5" parent="." instance=ExtResource("9_ufhes")]
+position = Vector2(1163, -101)
